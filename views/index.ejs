@@ -79,7 +79,8 @@
       });
       socket.on('chat message', function(msg) {
         console.log('chat!!: ', msg);
-        $('#messages').append($('<li/>').text(msg.name + ': ' + msg.text));
+        var msg = msg.name + ': ' + msg.text;
+        $('#messages').append($('<li/>').text(msg));
 
         for(var i=0; i<markers.length; i++) {
           console.log(markers[i]);
