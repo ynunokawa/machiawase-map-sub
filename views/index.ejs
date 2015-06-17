@@ -41,20 +41,37 @@
       var firstPost = true;
       var myname = null;
       var socket = io();
+      var currentMsg = "";
+
+      // マップ用の変数
+      var map;
+      var markers = []; // {marker: marker object, name: user name, currentMsg: current masage}
 
       // チャット
       $('form').submit(function() {
         console.log("submit!!: ", $('#m').val());
         if(firstPost === false) {
-          socket.emit('chat message', myname + ': ' + $('#m').val());
+          socket.emit('chat message', {
+            name: myname,
+            text: $('#m').val()
+          });
+          currentMsg = $('#m').val();
           $('#m').val('');
+
+          markers[0].currentMsg = currentMsg;
+          markers[0].marker.setPopupContent('<p>' + currentMsg + '</p>');
+
           return false;
         }
         else {
           firstPost = false;
           myname = $('#m').val();
           $('input').attr('placeholder', '');
-          socket.emit('chat message', myname + ': チャットに参加しました');
+          socket.emit('chat message', {
+            name: myname,
+            text: 'チャットに参加しました'
+          });
+          currentMsg = 'チャットに参加しました';
           $('#m').val('');
           initMap();
           return false;
@@ -62,14 +79,20 @@
       });
       socket.on('chat message', function(msg) {
         console.log('chat!!: ', msg);
-        $('#messages').append($('<li/>').text(msg));
+        $('#messages').append($('<li/>').text(msg.name + ': ' + msg.text));
+
+        for(var i=0; i<markers.length; i++) {
+          console.log(markers[i]);
+          if(markers[i].name === msg.name) {
+            console.log(msg.name, msg.text);
+            console.log(markers[i].marker);
+            markers[i].currentMsg = msg.text;
+            markers[i].marker.bindPopup('<p>' + msg.text + '</p>').openPopup();
+          }
+        }
       });
 
-
-      // マップ用の変数
-      var map;
-      var markers = [];
-
+      // マップ
       function initMap() {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(zoomToLocation, locationError);
@@ -82,12 +105,17 @@
         var lat = e.coords.latitude;
         var long = e.coords.longitude;
         // マップ
-        map = L.map('map').setView([lat, long], 16);
+        map = L.map('map', { closePopupOnClick: false }).setView([lat, long], 16);
         L.esri.basemapLayer('Topographic').addTo(map);
         //var marker = L.marker([lat, long], { alt: 'people', title: myname }).bindLabel(myname, { noHide: true }).addTo(map);
         var marker = L.marker([lat, long], { alt: 'people', title: myname }).addTo(map);
+        marker.bindPopup('<p>' + currentMsg + '</p>').openPopup();
         console.log("add marker: ", marker);
-        markers.push(marker);
+        markers.push({
+          marker: marker,
+          name: myname,
+          currentMsg: currentMsg
+        });
         console.log(markers[0]);
 
         socket.emit('map message', {
@@ -104,9 +132,9 @@
           console.log(markers[0]);
           for(var i=0; i<markers.length; i++) {
             console.log(markers[i]);
-            if(markers[i].options.title === msg.name) {
+            if(markers[i].name === msg.name) {
               nosamename = false;
-              markers[i].setLatLng([msg.lat, msg.long]);
+              markers[i].marker.setLatLng([msg.lat, msg.long]);
               if(msg.name === myname) {
                 map.panTo([msg.lat, msg.long]);
               }
@@ -117,7 +145,12 @@
             console.log("NEW PEOPLE!!");
             //var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).bindLabel(msg.name, { noHide: true }).addTo(map);
             var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).addTo(map);
-            markers.push(marker);
+            marker.bindPopup('<p></p>').openPopup();
+            markers.push({
+              marker: marker,
+              name: msg.name,
+              currentMsg: ''
+            });
           }
         });
       }
