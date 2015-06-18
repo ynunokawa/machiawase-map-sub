@@ -1,41 +1,49 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>待ち合わせマップ: The chat and map with Socket.IO</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 50%; }
+      /*form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 50%; }*/
+      form { background: #000; padding: 3px; bottom: 0; width: 100%; }
       form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
       form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
 
-      .chatside { margin: 0; padding: 0; height: 100%; width: 50%; position: fixed; }
-      .mapside { margin: 0; padding: 0; height: 100%; width: 50%; margin-left: 50%; position: fixed; }
+      /*.chatside { margin: 0; padding: 0; height: 100%; width: 50%; position: fixed; }
+      .mapside { margin: 0; padding: 0; height: 100%; width: 50%; margin-left: 50%; position: fixed; }*/
       #map { margin: 0; padding: 0; height: 300px; width: 100%; }
 
       .leaflet-label { font: 14px bold "Meiryo"; width: 50px; }
     </style>
   </head>
   <body>
-    <div class="chatside">
-      <ul id="messages"></ul>
-      <form action="" ="まずは名前を入れましょう">
-        <input id="m" autocomplete="off" placeholder="まずは名前を入力" /><button>Send</button>
-      </form>
+    <div class="row">
+      <div class="col-md-6">
+        <ul id="messages"></ul>
+      </div>
+      <div class="col-md-6">
+        <div id="map"></div>
+      </div>
     </div>
-    <div class="mapside">
-      <div id="map"></div>
+    <div class="row">
+      <div class="col-md-12">
+        <form action="">
+          <input id="m" autocomplete="off" placeholder="まずは名前を入力" /><button>送信</button>
+        </form>
+      </div>
     </div>
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
     <script src="http://cdn.jsdelivr.net/leaflet.esri/latest/esri-leaflet.js"></script>
-    <script src="http://leaflet.github.io/Leaflet.label/leaflet.label.js"></script>
     <script>
       // チャット用の変数
       var firstPost = true;
@@ -45,11 +53,13 @@
 
       // マップ用の変数
       var map;
-      var markers = []; // {marker: marker object, name: user name, currentMsg: current masage}
+      var markers = []; // { marker: marker object, name: user name, currentMsg: current masage }
 
       // チャット
+      // フォームの送信
       $('form').submit(function() {
         console.log("submit!!: ", $('#m').val());
+        // 2回目以降
         if(firstPost === false) {
           socket.emit('chat message', {
             name: myname,
@@ -63,6 +73,9 @@
 
           return false;
         }
+        // 初回
+        // [Plan] Facebook Login 実装したらアカウント名を利用する
+        // [Plan] formのsubmit時じゃなくてログイン後実行('チャットに参加しました'のポスト)
         else {
           firstPost = false;
           myname = $('#m').val();
@@ -77,11 +90,15 @@
           return false;
         }
       });
+      // メッセージの取得('chat message': チャット用のメッセージ)
+      // msg: { text: text, name: user name }
       socket.on('chat message', function(msg) {
         console.log('chat!!: ', msg);
+
         var msg = msg.name + ': ' + msg.text;
         $('#messages').append($('<li/>').text(msg));
 
+        // メッセージを送信したユーザーのマーカーのポップアップを更新
         for(var i=0; i<markers.length; i++) {
           console.log(markers[i]);
           if(markers[i].name === msg.name) {
@@ -94,15 +111,19 @@
       });
 
       // マップ
+      // 現在位置の取得と監視
       function initMap() {
+        var options = { maximumAge: 600000, timeout: 10000, enableHighAccuracy: false };
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(zoomToLocation, locationError);
           navigator.geolocation.watchPosition(showLocation, locationError);
         }
       }
 
+      // 現在位置へ移動(マップ初期化)
       function zoomToLocation(e) {
         console.log(e);
+        // 現在位置の緯度経度
         var lat = e.coords.latitude;
         var long = e.coords.longitude;
         // マップ
@@ -119,12 +140,16 @@
         });
         console.log(markers[0]);
 
+        // 位置の送信
         socket.emit('map message', {
           name: myname,
           lat: lat,
           long: long
         });
 
+
+        // メッセージの取得('map message': マップ用のメッセージ)
+        // msg: { name: user name, lat: latitude, long: longitude }
         socket.on('map message', function(msg) {
           console.log('map!!: ', msg);
           var othernames = [];
@@ -155,18 +180,43 @@
           }
         });
       }
+
+      // 現在位置の更新
       function showLocation(e) {
         console.log(e);
         var lat = e.coords.latitude;
         var long = e.coords.longitude;
+        // 位置の送信
         socket.emit('map message', {
           name: myname,
           lat: lat,
           long: long
         });
       }
+
+      // 現在位置取得エラー
       function locationError(e) {
         console.log(e);
+
+        // 現在位置取得できなくてもマップ表示
+        map = L.map('map', { closePopupOnClick: false }).setView([139, 35], 12);
+        L.esri.basemapLayer('Topographic').addTo(map);
+        var marker = L.marker([lat, long], { alt: 'people', title: myname }).addTo(map);
+        marker.bindPopup('<p>現在位置を取得できませんでした！GPSはONになってるかな？</p>').openPopup();
+        console.log("add marker: ", marker);
+        markers.push({
+          marker: marker,
+          name: myname,
+          currentMsg: currentMsg
+        });
+        console.log(markers[0]);
+
+        // 位置の送信
+        socket.emit('map message', {
+          name: myname,
+          lat: lat,
+          long: long
+        });
       }
     </script>
 
