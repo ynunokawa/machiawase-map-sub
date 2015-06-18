@@ -8,12 +8,15 @@
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
       /*form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 50%; }*/
-      form { background: #000; padding: 3px; bottom: 0; width: 100%; }
+      form { background: #E6FAFA; padding: 3px; bottom: 0; width: 100%; }
       form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
+      form button { width: 9%; background: #00D0CE; color: #fff; border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; height: 300px; overflow: scroll; }
       #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
+      #messages li:nth-child(odd) { background: #E6FAFA; }
+
+      #head { background:-webkit-gradient(linear, 80% 20%, 10% 21%, from(#00D0CE), to(#008382)); padding: 3px; bottom: 0; width: 100%; }
+      .title { padding: 5px 3px 0 10px; font-size: 8pt; color: #fff; }
 
       /*.chatside { margin: 0; padding: 0; height: 100%; width: 50%; position: fixed; }
       .mapside { margin: 0; padding: 0; height: 100%; width: 50%; margin-left: 50%; position: fixed; }*/
@@ -24,17 +27,22 @@
   </head>
   <body>
     <div class="row">
-      <div class="col-md-6">
-        <ul id="messages"></ul>
+      <div class="col-md-12">
+        <div id="head"><p class="title">待ち合わせのためのおしゃべりマップ</p></div>
       </div>
+    </div>
+    <div class="row">
       <div class="col-md-6">
         <div id="map"></div>
+      </div>
+      <div class="col-md-6">
+        <ul id="messages"></ul>
       </div>
     </div>
     <div class="row">
       <div class="col-md-12">
         <form action="">
-          <input id="m" autocomplete="off" placeholder="まずは名前を入力" /><button>送信</button>
+          <input id="m" autocomplete="off" placeholder="まずは名前を入力" /><button>おしゃべり！</button>
         </form>
       </div>
     </div>
@@ -87,6 +95,7 @@
           currentMsg = 'チャットに参加しました';
           $('#m').val('');
           initMap();
+
           return false;
         }
       });
@@ -99,6 +108,12 @@
         var usr = msg.name;
         var txt = msg.text;
         $('#messages').append($('<li/>').text(msgtxt));
+
+        // メッセージリスト13行目以降自動スクロール
+        if($('#messages li').length > 12) {
+          console.log("li > 12");
+          $('#messages').animate({ scrollTop: 300 });
+        }
 
         // メッセージを送信したユーザーのマーカーのポップアップを更新
         for(var i=0; i<markers.length; i++) {
