@@ -95,15 +95,16 @@
       socket.on('chat message', function(msg) {
         console.log('chat!!: ', msg);
 
-        var msg = msg.name + ': ' + msg.text;
+        var msgtxt = msg.name + ': ' + msg.text;
         var usr = msg.name;
         var txt = msg.text;
-        $('#messages').append($('<li/>').text(msg));
+        $('#messages').append($('<li/>').text(msgtxt));
 
         // メッセージを送信したユーザーのマーカーのポップアップを更新
         for(var i=0; i<markers.length; i++) {
           console.log(markers[i]);
-          if(markers[i].name === usr) {
+          console.log(usr);
+          if(markers[i].name == usr) {
             console.log(usr, txt);
             console.log(markers[i].marker);
             markers[i].currentMsg = txt;
@@ -182,7 +183,7 @@
             console.log("NEW PEOPLE!!");
             //var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).bindLabel(msg.name, { noHide: true }).addTo(map);
             var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).addTo(map);
-            marker.bindPopup('<p></p>').openPopup();
+            marker.bindPopup('<p>' + msg.name + '登場！</p>').openPopup();
             markers.push({
               marker: marker,
               name: msg.name,
