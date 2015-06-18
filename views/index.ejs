@@ -118,6 +118,26 @@
           navigator.geolocation.getCurrentPosition(zoomToLocation, locationError);
           navigator.geolocation.watchPosition(showLocation, locationError);
         }
+        else {
+          // 現在位置取得できなくてもマップ表示
+          createMap(139, 35, '現在位置を取得できませんでした！GPSはONになってるかな？');
+        }
+      }
+
+      function createMap(lat, long, msg) {
+        // マップ
+        map = L.map('map', { closePopupOnClick: false }).setView([lat, long], 16);
+        L.esri.basemapLayer('Topographic').addTo(map);
+        //var marker = L.marker([lat, long], { alt: 'people', title: myname }).bindLabel(myname, { noHide: true }).addTo(map);
+        var marker = L.marker([lat, long], { alt: 'people', title: myname }).addTo(map);
+        marker.bindPopup('<p>' + msg + '</p>').openPopup();
+        console.log("add marker: ", marker);
+        markers.push({
+          marker: marker,
+          name: myname,
+          currentMsg: msg
+        });
+        console.log(markers[0]);
       }
 
       // 現在位置へ移動(マップ初期化)
@@ -127,18 +147,7 @@
         var lat = e.coords.latitude;
         var long = e.coords.longitude;
         // マップ
-        map = L.map('map', { closePopupOnClick: false }).setView([lat, long], 16);
-        L.esri.basemapLayer('Topographic').addTo(map);
-        //var marker = L.marker([lat, long], { alt: 'people', title: myname }).bindLabel(myname, { noHide: true }).addTo(map);
-        var marker = L.marker([lat, long], { alt: 'people', title: myname }).addTo(map);
-        marker.bindPopup('<p>' + currentMsg + '</p>').openPopup();
-        console.log("add marker: ", marker);
-        markers.push({
-          marker: marker,
-          name: myname,
-          currentMsg: currentMsg
-        });
-        console.log(markers[0]);
+        createMap(lat, long, currentMsg);
 
         // 位置の送信
         socket.emit('map message', {
@@ -199,17 +208,7 @@
         console.log(e);
 
         // 現在位置取得できなくてもマップ表示
-        map = L.map('map', { closePopupOnClick: false }).setView([139, 35], 12);
-        L.esri.basemapLayer('Topographic').addTo(map);
-        var marker = L.marker([lat, long], { alt: 'people', title: myname }).addTo(map);
-        marker.bindPopup('<p>現在位置を取得できませんでした！GPSはONになってるかな？</p>').openPopup();
-        console.log("add marker: ", marker);
-        markers.push({
-          marker: marker,
-          name: myname,
-          currentMsg: currentMsg
-        });
-        console.log(markers[0]);
+        createMap(139, 35, '現在位置を取得できませんでした！GPSはONになってるかな？');
 
         // 位置の送信
         socket.emit('map message', {
