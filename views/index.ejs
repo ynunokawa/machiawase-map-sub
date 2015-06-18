@@ -96,16 +96,18 @@
         console.log('chat!!: ', msg);
 
         var msg = msg.name + ': ' + msg.text;
+        var usr = msg.name;
+        var txt = msg.text;
         $('#messages').append($('<li/>').text(msg));
 
         // メッセージを送信したユーザーのマーカーのポップアップを更新
         for(var i=0; i<markers.length; i++) {
           console.log(markers[i]);
-          if(markers[i].name === msg.name) {
-            console.log(msg.name, msg.text);
+          if(markers[i].name === usr) {
+            console.log(usr, txt);
             console.log(markers[i].marker);
-            markers[i].currentMsg = msg.text;
-            markers[i].marker.bindPopup('<p>' + msg.text + '</p>').openPopup();
+            markers[i].currentMsg = txt;
+            markers[i].marker.bindPopup('<p>' + txt + '</p>').openPopup();
           }
         }
       });
