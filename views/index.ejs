@@ -73,6 +73,7 @@
       var map;
       var markers = []; // { marker: marker object, name: user name, currentMsg: current masage }
       var mylat, mylong;
+      var mytrack;
 
       // チャット
       // フォームの送信
@@ -167,6 +168,7 @@
         //var marker = L.marker([lat, long], { alt: 'people', title: myname }).bindLabel(myname, { noHide: true }).addTo(map);
         var marker = L.marker([lat, long], { alt: 'people', title: myname }).addTo(map);
         marker.bindPopup('<p>' + msg + '</p>', { closeButton: false }).openPopup();
+        mytrack = L.polyline([[lat, long]], { color: 'red', weight: 2, dashArray: '5, 5' }).addTo(map);
         console.log("add marker: ", marker);
         markers.push({
           marker: marker,
@@ -210,6 +212,7 @@
                 mylat = msg.lat;
                 mylong = msg.long;
                 map.panTo([msg.lat, msg.long]);
+                mytrack.addLatLng([msg.lat, msg.long]);
               }
             }
           }
