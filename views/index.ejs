@@ -150,7 +150,14 @@
         }
         else {
           // 現在位置取得できなくてもマップ表示
-          createMap(35, 139, '現在位置を取得できませんでした！GPSはONになってるかな？');
+          createMap(0, 0, '現在位置を取得できませんでした！GPSはONになってるかな？');
+
+          // 位置の送信
+          socket.emit('map message', {
+            name: myname,
+            lat: 0,
+            long: 0
+          });
         }
       }
 
@@ -250,13 +257,13 @@
         console.log(e);
 
         // 現在位置取得できなくてもマップ表示
-        createMap(35, 139, '現在位置を取得できませんでした！GPSはONになってるかな？');
+        createMap(0, 0, '現在位置を取得できませんでした！GPSはONになってるかな？');
 
         // 位置の送信
         socket.emit('map message', {
           name: myname,
-          lat: lat,
-          long: long
+          lat: 0,
+          long: 0
         });
       }
     </script>
