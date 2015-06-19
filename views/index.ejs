@@ -123,7 +123,7 @@
         // メッセージリスト13行目以降自動スクロール
         if($('#messages li').length > 12) {
           console.log("li > 12");
-          $('#messages').animate({ scrollTop: 300 });
+          $('#messages').animate({ scrollTop: 49 * $('#messages li').length });
         }
 
         // メッセージを送信したユーザーのマーカーのポップアップを更新
