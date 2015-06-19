@@ -16,7 +16,9 @@
       #messages li:nth-child(odd) { background: #E6FAFA; }
 
       #head { background:-webkit-gradient(linear, 80% 20%, 10% 21%, from(#00D0CE), to(#008382)); padding: 3px; bottom: 0; width: 100%; }
-      .title { padding: 5px 3px 0 10px; font-size: 24pt; color: #fff; }
+      .title { padding: 5px 3px 0 10px; font-size: 32px; color: #fff; }
+      .mylocation { margin-left: 10px; margin-top: 80px; z-index: 999; display: none; }
+      .mylocation-icon { height: 10px; width: 10px;}
 
       /*.chatside { margin: 0; padding: 0; height: 100%; width: 50%; position: fixed; }
       .mapside { margin: 0; padding: 0; height: 100%; width: 50%; margin-left: 50%; position: fixed; }*/
@@ -37,7 +39,11 @@
     </div>
     <div class="row">
       <div class="col-md-6">
-        <div id="map"></div>
+        <div id="map">
+          <div class="mylocation leaflet-bar leaflet-control">
+            <a href="#"><img class="mylocation-icon" src="images/mylocation.png"/></a>
+          </div>
+        </div>
       </div>
       <div class="col-md-6">
         <ul id="messages"></ul>
@@ -66,6 +72,7 @@
       // マップ用の変数
       var map;
       var markers = []; // { marker: marker object, name: user name, currentMsg: current masage }
+      var mylat, mylong;
 
       // チャット
       // フォームの送信
@@ -147,9 +154,16 @@
       }
 
       function createMap(lat, long, msg) {
+        mylat = lat;
+        mylong = long;
         // マップ
         map = L.map('map', { closePopupOnClick: false }).setView([lat, long], 16);
         L.esri.basemapLayer('Topographic').addTo(map);
+
+        $('.mylocation').css('display', 'block');
+        $('.mylocation').click(function() {
+          map.panTo([mylat, mylong]);
+        });
         //var marker = L.marker([lat, long], { alt: 'people', title: myname }).bindLabel(myname, { noHide: true }).addTo(map);
         var marker = L.marker([lat, long], { alt: 'people', title: myname }).addTo(map);
         marker.bindPopup('<p>' + msg + '</p>', { closeButton: false }).openPopup();
@@ -193,6 +207,8 @@
               nosamename = false;
               markers[i].marker.setLatLng([msg.lat, msg.long]);
               if(msg.name === myname) {
+                mylat = msg.lat;
+                mylong = msg.long;
                 map.panTo([msg.lat, msg.long]);
               }
             }
@@ -203,6 +219,7 @@
             //var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).bindLabel(msg.name, { noHide: true }).addTo(map);
             var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).addTo(map);
             marker.bindPopup('<p>' + msg.name + '登場！</p>', { closeButton: false }).openPopup();
+            map.panTo([msg.lat, msg.long]);
             markers.push({
               marker: marker,
               name: msg.name,
