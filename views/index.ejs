@@ -139,6 +139,7 @@
             console.log(usr, txt);
             console.log(markers[i].marker);
             markers[i].currentMsg = txt;
+            markers[i].marker.closePopup();
             markers[i].marker.bindPopup('<p>' + txt + '</p>', { closeButton: false }).openPopup();
           }
         }
@@ -182,6 +183,19 @@
       function createMap(lat, long, msg) {
         mylat = lat;
         mylong = long;
+
+        // ポップアップ複数表示ハック
+        L.Map = L.Map.extend({
+            openPopup: function(popup) {
+                //        this.closePopup();  // just comment this
+                this._popup = popup;
+
+                return this.addLayer(popup).fire('popupopen', {
+                    popup: this._popup
+                });
+            }
+        });
+
         // マップ
         map = L.map('map', { closePopupOnClick: false }).setView([lat, long], 16);
         L.esri.basemapLayer('Topographic').addTo(map);
