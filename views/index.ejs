@@ -26,9 +26,9 @@
       p { font-size: 26px; }
 
       .leaflet-marker-icon {
-        border-radius: 5px;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
+        border-radius: 7px;
+        -webkit-border-radius: 7px;
+        -moz-border-radius: 7px;
       }
     </style>
   </head>
@@ -148,15 +148,15 @@
       // アイコン
       var LeafIcon = L.Icon.extend({
   			options: {
-  				shadowUrl: 'images/location-icon.png',
-          shadowSize: [60, 60], // ベース画像のサイズ
-          shadowAnchor: [30, 30], // [0,0]
-          iconSize: [44, 44], // プロフィール写真のサイズ
-          iconAnchor: [22, 22], // [0,0]?
-          popupAnchor: [0, -22] // ポップアップの位置
+  				shadowUrl: 'images/location-icon.png', // 回避策検討: shadowが他のアイコンの上部画像に負ける
+          shadowSize: [90, 90], // ベース画像のサイズ
+          shadowAnchor: [45, 45], // [0,0]
+          iconSize: [70, 70], // プロフィール写真のサイズ
+          iconAnchor: [35, 35], // [0,0]?
+          popupAnchor: [0, -32] // ポップアップの位置
   			}
   		});
-      var locationIcon = new LeafIcon({iconUrl: 'images/profile.jpg'});
+      var locationIcon = new LeafIcon({iconUrl: 'images/profile.jpg'}); // ここにfacebookのプロフィール画像を入れる
 
 
       // 現在位置の取得と監視
