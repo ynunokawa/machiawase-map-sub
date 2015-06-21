@@ -25,7 +25,11 @@
       #map { margin: 0; padding: 0; height: 600px; width: 100%; }
       p { font-size: 26px; }
 
-      .leaflet-label { font: 14px bold "Meiryo"; width: 50px; }
+      .leaflet-marker-icon {
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+      }
     </style>
   </head>
   <body>
@@ -141,6 +145,20 @@
       });
 
       // マップ
+      // アイコン
+      var LeafIcon = L.Icon.extend({
+  			options: {
+  				shadowUrl: 'images/location-icon.png',
+          shadowSize: [60, 60], // ベース画像のサイズ
+          shadowAnchor: [30, 30], // [0,0]
+          iconSize: [44, 44], // プロフィール写真のサイズ
+          iconAnchor: [22, 22], // [0,0]?
+          popupAnchor: [0, -22] // ポップアップの位置
+  			}
+  		});
+      var locationIcon = new LeafIcon({iconUrl: 'images/profile.jpg'});
+
+
       // 現在位置の取得と監視
       function initMap() {
         var options = { maximumAge: 600000, timeout: 10000, enableHighAccuracy: false };
@@ -173,7 +191,7 @@
           map.panTo([mylat, mylong]);
         });
         //var marker = L.marker([lat, long], { alt: 'people', title: myname }).bindLabel(myname, { noHide: true }).addTo(map);
-        var marker = L.marker([lat, long], { alt: 'people', title: myname }).addTo(map);
+        var marker = L.marker([lat, long], { alt: 'people', title: myname, icon: locationIcon }).addTo(map);
         marker.bindPopup('<p>' + msg + '</p>', { closeButton: false }).openPopup();
         mytrack = L.polyline([[lat, long]], { color: 'red', weight: 2, dashArray: '5, 5' }).addTo(map);
         console.log("add marker: ", marker);
@@ -227,7 +245,7 @@
           if(nosamename === true) {
             console.log("NEW PEOPLE!!");
             //var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).bindLabel(msg.name, { noHide: true }).addTo(map);
-            var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).addTo(map);
+            var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name, icon: locationIcon }).addTo(map);
             marker.bindPopup('<p>' + msg.name + '登場！</p>', { closeButton: false }).openPopup();
             map.panTo([msg.lat, msg.long]);
             markers.push({
