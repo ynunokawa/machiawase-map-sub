@@ -67,7 +67,7 @@
         text-align: center;
       }
       #status {
-        font: 26px "Meiryo", Helvetica, Arial;
+        font: 48px "Meiryo", Helvetica, Arial;
         color: white;
       }
       #app {
@@ -78,7 +78,7 @@
   <body>
     <div id="login">
       <div class="login-btn">
-        <div id="status">アプリ使うにはFacebookログインしてね！</div>
+        <div id="status">アプリを使うには<br>Facebookログインしてね！</div>
         <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
         </fb:login-button>
       </div>
@@ -108,7 +108,7 @@
       <div class="row">
         <div class="col-md-12">
           <form action="">
-            <input id="m" autocomplete="off" placeholder="まずは名前を入力" /><button>送信</button>
+            <input id="m" autocomplete="off" placeholder="" /><button>送信</button>
           </form>
         </div>
       </div>
@@ -125,6 +125,7 @@
       var myid = "";
       var profile_img_url = "";
       var mytoken = "";
+      var myname = "";
 
       // This is called with the results from from FB.getLoginStatus().
       function statusChangeCallback(response) {
@@ -202,6 +203,7 @@
           console.log('https://graph.facebook.com/' + response.id + '/picture');
           console.log(response);
           myid = response.id;
+          myname = response.name;
           profile_img_url = 'https://graph.facebook.com/' + response.id + '/picture';
           init();
           document.getElementById('status').innerHTML =
@@ -215,7 +217,7 @@
       // チャット
       // チャット用の変数
       var firstPost = true;
-      var myname = null;
+      //var myname = null;
       var socket = io();
       var currentMsg = "";
 
@@ -245,6 +247,16 @@
 
         locationIcon = new LeafIcon({iconUrl: profile_img_url});
 
+
+        firstPost = false;
+        socket.emit('chat message', {
+          name: myname,
+          text: 'チャットに参加しました'
+        });
+        currentMsg = 'チャットに参加しました';
+        $('#m').val('');
+        initMap();
+
         // チャット
         // フォームの送信
         $('form').submit(function() {
@@ -266,9 +278,9 @@
           // 初回
           // [Plan] Facebook Login 実装したらアカウント名を利用する
           // [Plan] formのsubmit時じゃなくてログイン後実行('チャットに参加しました'のポスト)
-          else {
+          /*else {
             firstPost = false;
-            myname = $('#m').val();
+            //myname = $('#m').val();
             $('input').attr('placeholder', '');
             socket.emit('chat message', {
               name: myname,
@@ -279,7 +291,7 @@
             initMap();
 
             return false;
-          }
+          }*/
         });
         // メッセージの取得('chat message': チャット用のメッセージ)
         // msg: { text: text, name: user name }
