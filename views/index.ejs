@@ -412,6 +412,9 @@
           if(nosamename === true) {
             console.log("NEW PEOPLE!!");
             //var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).bindLabel(msg.name, { noHide: true }).addTo(map);
+            $.get("https://graph.facebook.com/646860185450574/picture?redirect=false", function(data){
+              console.log("Data Loaded: " + data);
+            });
             var yourIcon = new LeafIcon({iconUrl: 'https://graph.facebook.com/' + msg.id + '/picture'});
             var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name, icon: yourIcon }).addTo(map);
             marker.bindPopup('<p>' + msg.name + '登場！</p>', { closeButton: false }).openPopup();
