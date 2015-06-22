@@ -20,17 +20,22 @@
       .mylocation { margin-left: 10px; margin-top: 80px; z-index: 999; display: none; }
       .mylocation-icon { height: 10px; width: 10px;}
 
-      /*.chatside { margin: 0; padding: 0; height: 100%; width: 50%; position: fixed; }
-      .mapside { margin: 0; padding: 0; height: 100%; width: 50%; margin-left: 50%; position: fixed; }*/
       #map { margin: 0; padding: 0; height: 600px; width: 100%; }
       p { font-size: 26px; }
 
-      .leaflet-marker-icon {
+      /*.leaflet-marker-icon {
         border-radius: 12px;
         -webkit-border-radius: 12px;
         -moz-border-radius: 12px;
         border: 8px #00D0CE solid;
         box-shadow: 0 8px 3px rgba(0,0,0,0.4);
+      }*/
+      .leaflet-marker-icon {
+        border-radius: 40px;
+        -webkit-border-radius: 40px;
+        -moz-border-radius: 40px;
+        border: 4px #fff solid;
+        box-shadow: 0 0 0 2px #00D0CE, 0 8px 5px rgba(0,0,0,0.4);
       }
     </style>
   </head>
@@ -154,9 +159,9 @@
   				//shadowUrl: 'images/location-icon.png', // 回避策検討: shadowが他のアイコンの上部画像に負ける --> shadow 使わずCSSで対応(border, border-radius, box-shadow)
           //shadowSize: [100, 100], // shadow画像のサイズ
           //shadowAnchor: [50, 50], // shadowの相対位置
-          iconSize: [76, 76], // プロフィール写真のサイズ
-          iconAnchor: [38, 38], // プロフィール写真の相対位置
-          popupAnchor: [0, -36] // ポップアップの相対位置
+          iconSize: [80, 80], // プロフィール写真のサイズ
+          iconAnchor: [40, 40], // プロフィール写真の相対位置
+          popupAnchor: [0, -38] // ポップアップの相対位置
   			}
   		});
       var locationIcon = new LeafIcon({iconUrl: 'images/profile.jpg'}); // ここにfacebookのプロフィール画像を入れる
