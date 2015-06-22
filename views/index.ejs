@@ -124,6 +124,7 @@
 
       var myid = "";
       var profile_img_url = "";
+      var mytoken = "";
 
       // This is called with the results from from FB.getLoginStatus().
       function statusChangeCallback(response) {
@@ -135,6 +136,7 @@
         // for FB.getLoginStatus().
         if (response.status === 'connected') {
           // Logged into your app and Facebook.
+          mytoken = response.authResponse.accessToken;
           testAPI();
         } else if (response.status === 'not_authorized') {
           // The person is logged into Facebook, but not your app.
@@ -412,7 +414,7 @@
           if(nosamename === true) {
             console.log("NEW PEOPLE!!");
             //var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).bindLabel(msg.name, { noHide: true }).addTo(map);
-            $.get('https://graph.facebook.com/' + msg.id + '/picture?redirect=false', function(response){
+            $.get('https://graph.facebook.com/' + msg.id + '/picture?redirect=false&access_token=' + mytoken, function(response){
               console.log("Data Loaded: " + response.data.url);
               var yourIcon = new LeafIcon({iconUrl: response.data.url});
               var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name, icon: yourIcon }).addTo(map);
