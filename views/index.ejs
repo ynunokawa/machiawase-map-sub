@@ -118,6 +118,7 @@
     <script>
       // Facebook ログイン
 
+      var myid = "";
       var profile_img_url = "";
 
       // This is called with the results from from FB.getLoginStatus().
@@ -194,6 +195,7 @@
           console.log('Successful login for: ' + response.name);
           console.log('https://graph.facebook.com/' + response.id + '/picture');
           console.log(response);
+          myid = response.id;
           profile_img_url = 'https://graph.facebook.com/' + response.id + '/picture';
           init();
           document.getElementById('status').innerHTML =
@@ -376,7 +378,8 @@
         socket.emit('map message', {
           name: myname,
           lat: lat,
-          long: long
+          long: long,
+          id: myid
         });
 
 
@@ -405,6 +408,7 @@
           if(nosamename === true) {
             console.log("NEW PEOPLE!!");
             //var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).bindLabel(msg.name, { noHide: true }).addTo(map);
+            var youricon = new LeafIcon({iconUrl: 'https://graph.facebook.com/' + msg.id + '/picture'});
             var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name, icon: locationIcon }).addTo(map);
             marker.bindPopup('<p>' + msg.name + '登場！</p>', { closeButton: false }).openPopup();
             map.panTo([msg.lat, msg.long]);
