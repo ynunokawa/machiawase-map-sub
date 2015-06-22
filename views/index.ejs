@@ -250,6 +250,7 @@
 
         firstPost = false;
         socket.emit('chat message', {
+          id: myid,
           name: myname,
           text: 'チャットに参加しました'
         });
@@ -264,6 +265,7 @@
           // 2回目以降
           if(firstPost === false) {
             socket.emit('chat message', {
+              id: myid,
               name: myname,
               text: $('#m').val()
             });
@@ -339,6 +341,7 @@
 
           // 位置の送信
           socket.emit('map message', {
+            id: myid,
             name: myname,
             lat: 0,
             long: 0
@@ -377,6 +380,7 @@
         console.log("add marker: ", marker);
         markers.push({
           marker: marker,
+          id: myid,
           name: myname,
           currentMsg: msg
         });
@@ -411,10 +415,10 @@
           console.log(markers[0]);
           for(var i=0; i<markers.length; i++) {
             console.log(markers[i]);
-            if(markers[i].name === msg.name) {
+            if(markers[i].id === msg.id) {
               nosamename = false;
               markers[i].marker.setLatLng([msg.lat, msg.long]);
-              if(msg.name === myname) {
+              if(msg.id === myid) {
                 mylat = msg.lat;
                 mylong = msg.long;
                 map.panTo([msg.lat, msg.long]);
@@ -434,6 +438,7 @@
               map.panTo([msg.lat, msg.long]);
               markers.push({
                 marker: marker,
+                id: msg.id,
                 name: msg.name,
                 currentMsg: ''
               });
