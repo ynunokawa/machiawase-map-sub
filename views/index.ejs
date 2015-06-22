@@ -302,6 +302,7 @@
 
           var msgtxt = msg.name + ': ' + msg.text;
           var usr = msg.name;
+          var fbid = msg.id;
           var txt = msg.text;
           $('#messages').append($('<li/>').text(msgtxt));
 
@@ -315,7 +316,7 @@
           for(var i=0; i<markers.length; i++) {
             console.log(markers[i]);
             console.log(usr);
-            if(markers[i].name == usr) {
+            if(markers[i].id == fbid) {
               console.log(usr, txt);
               console.log(markers[i].marker);
               markers[i].currentMsg = txt;
