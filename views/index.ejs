@@ -155,7 +155,7 @@
       function checkLoginState() {
         FB.login(function(response) {
           statusChangeCallback(response);
-        }, {scope: 'public_profile, user_friends, read_mailbox, read_page_mailboxes'});
+        }, {scope: 'public_profile, user_friends, read_mailbox, read_page_mailboxes, manage_pages'});
         /*FB.getLoginStatus(function(response) {
           statusChangeCallback(response);
         });*/
