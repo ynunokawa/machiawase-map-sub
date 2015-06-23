@@ -70,6 +70,9 @@
         font: 48px "Meiryo", Helvetica, Arial;
         color: white;
       }
+      #rooms {
+        display: none;
+      }
       #app {
         display: none;
       }
@@ -79,8 +82,27 @@
     <div id="login">
       <div class="login-btn">
         <div id="status">アプリを使うには<br>Facebookログインしてね！</div>
-        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+        <fb:login-button scope="public_profile,email,user_friends,read_mailbox,read_page_mailboxes,manage_pages" onlogin="checkLoginState();">
         </fb:login-button>
+      </div>
+    </div>
+
+    <div id="rooms">
+      <div class="row">
+        <div class="col-md-12">
+          <div id="room1" class="room1 panel panel-default">
+            <div class="panel-heading">Room ID</div>
+            <div class="panel-body">Room Member</div>
+          </div>
+          <div id="room2" class="room2 panel panel-default">
+            <div class="panel-heading">Room ID</div>
+            <div class="panel-body">Room Member</div>
+          </div>
+          <div id="room3" class="room3 panel panel-default">
+            <div class="panel-heading">Room ID</div>
+            <div class="panel-body">Room Member</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -154,12 +176,12 @@
       // Button.  See the onlogin handler attached to it in the sample
       // code below.
       function checkLoginState() {
-        FB.login(function(response) {
+        /*FB.login(function(response) {
           statusChangeCallback(response);
-        }, {scope: 'public_profile, user_friends, read_mailbox, read_page_mailboxes, manage_pages'});
-        /*FB.getLoginStatus(function(response) {
+        }, {scope: 'public_profile, user_friends, read_mailbox, read_page_mailboxes, manage_pages'});*/
+        FB.getLoginStatus(function(response) {
           statusChangeCallback(response);
-        });*/
+        });
       }
 
       window.fbAsyncInit = function() {
@@ -208,21 +230,33 @@
           myid = response.id;
           myname = response.name;
           profile_img_url = 'https://graph.facebook.com/' + response.id + '/picture';
-          init();
+          //viewRooms();
           document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
 
           FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
             console.log('conversations: ', conv);
             for(var i=0; i<conv.data.length; i++) {
               conversations.push({ id: conv.data[i].id, title: 'no title'});
+              var party = '';
+              for(var j=0; j<conv.data[i].participants.data.length; j++) {
+                party = party + conv.data[i].participants.data[j].name + " ";
+              }
+              $('.room' + String(i) + '> panel-heading').html(conv.data[i].id);
+              $('.room' + String(i) + '> panel-body').html(party);
             }
+            viewRooms();
           });
         });
       }
 
 
       //チャットルーム（メッセンジャー連携）
-
+      function viewRooms() {
+        // ログイン画面の消去
+        $("#login").stop().animate({opacity: 0}, {duration: 600});
+        setTimeout(function() {$("#login").hide();}, 600);
+        $('#rooms').css('display', 'block');
+      }
 
 
       // アプリ
