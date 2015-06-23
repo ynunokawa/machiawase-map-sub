@@ -70,7 +70,7 @@
         font: 48px "Meiryo", Helvetica, Arial;
         color: white;
       }
-      #rooms {
+      #chatmap {
         display: none;
       }
       #app {
@@ -96,39 +96,62 @@
       </div>
     </div>
 
-    <div id="rooms">
+    <div id="app">
       <div class="row">
         <div class="col-md-12">
           <div id="head">
             <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
           </div>
-          <p class="rooms-title"><b>おしゃべりるーむ</b></p>
-          <div class="room1 panel panel-default">
-            <div class="panel-heading"><b>るーむ１</b></div>
-            <div class="panel-body"></div>
+          <div id="rooms">
+            <p class="rooms-title"><b>おしゃべりるーむ</b></p>
+            <div class="room1 panel panel-default">
+              <div class="panel-heading"><b>るーむ１</b></div>
+              <div class="panel-body"></div>
+            </div>
+            <div class="room2 panel panel-default">
+              <div class="panel-heading"><b>るーむ２</b></div>
+              <div class="panel-body"></div>
+            </div>
+            <div class="room3 panel panel-default">
+              <div class="panel-heading"><b>るーむ３</b></div>
+              <div class="panel-body"></div>
+            </div>
+            <div class="room4 panel panel-default">
+              <div class="panel-heading"><b>るーむ４</b></div>
+              <div class="panel-body"></div>
+            </div>
+            <div class="room5 panel panel-default">
+              <div class="panel-heading"><b>るーむ５</b></div>
+              <div class="panel-body"></div>
+            </div>
+            <p>※「るーむ」は準備中です。どのるーむを選択してもすべてのユーザーが入れる状態です。</p>
           </div>
-          <div class="room2 panel panel-default">
-            <div class="panel-heading"><b>るーむ２</b></div>
-            <div class="panel-body"></div>
+        </div>
+      </div>
+      <div id="chatmap">
+        <div class="row">
+          <div class="col-md-6">
+            <div id="map">
+              <div class="mylocation leaflet-bar leaflet-control">
+                <a href="#"><img class="mylocation-icon" src="images/mylocation.png"/></a>
+              </div>
+            </div>
           </div>
-          <div class="room3 panel panel-default">
-            <div class="panel-heading"><b>るーむ３</b></div>
-            <div class="panel-body"></div>
+          <div class="col-md-6">
+            <ul id="messages"></ul>
           </div>
-          <div class="room4 panel panel-default">
-            <div class="panel-heading"><b>るーむ４</b></div>
-            <div class="panel-body"></div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <form action="">
+              <input id="m" autocomplete="off" placeholder="" /><button>送信</button>
+            </form>
           </div>
-          <div class="room5 panel panel-default">
-            <div class="panel-heading"><b>るーむ５</b></div>
-            <div class="panel-body"></div>
-          </div>
-          <p>※「るーむ」は準備中です。どのるーむを選択してもすべてのユーザーが入れる状態です。</p>
         </div>
       </div>
     </div>
 
-    <div id="app">
+    <!--<div id="chatmap">
       <div class="row">
         <div class="col-md-12">
           <div id="head">
@@ -155,7 +178,7 @@
           </form>
         </div>
       </div>
-    </div>
+    </div>-->
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -284,10 +307,9 @@
         // ログイン画面の消去
         $("#login").stop().animate({opacity: 0}, {duration: 600});
         setTimeout(function() {
-          // #loginをhideしてから#roomsをshowするとマップの幅が一瞬0になるのか地図表示がおかしい＆ポップアップレイアウトが崩れる
           $("#login").hide();
+          $('#app').css('display', 'block');
         }, 600);
-        $('#rooms').css('display', 'block');
 
         $('.panel-default').click(function(e) {
           console.log(e);
@@ -331,7 +353,7 @@
         $("#rooms").stop().animate({opacity: 0}, {duration: 600});
         setTimeout(function() {
           $("#rooms").hide();
-          $('#app').css('display', 'block');
+          $('#chatmap').css('display', 'block');
         }, 600);
 
         // Facebookのプロフィール画像をアイコンに設定
