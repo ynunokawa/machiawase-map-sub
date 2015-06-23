@@ -100,8 +100,8 @@
         <div class="col-md-12">
           <div id="head">
             <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
-            <p></p>
           </div>
+          <h4>Facebookメッセンジャーのなかで最近更新されたメッセージに対応して５つの「るーむ」から選択できます。<br>各「るーむ」に入れるメンバーはアイコンが表示されているユーザーのみです。</h4>
           <div class="room1 panel panel-default">
             <div class="panel-heading"><b>るーむ１</b></div>
             <div class="panel-body"></div>
@@ -122,6 +122,7 @@
             <div class="panel-heading"><b>るーむ５</b></div>
             <div class="panel-body"></div>
           </div>
+          <p>※「るーむ」は準備中です。どのるーむを選択してもすべてのユーザーが入れる状態です。</p>
         </div>
       </div>
     </div>
@@ -320,6 +321,7 @@
 
       // チャット開始
       function init(roomid) {
+        console.log('roomid: ', roomid);
         // ログイン画面の消去
         //$("#login").stop().animate({opacity: 0}, {duration: 600});
         //setTimeout(function() {$("#login").hide();}, 600);
