@@ -201,13 +201,14 @@
         FB.api('/me', function(response) {
           console.log('Successful login for: ' + response.name);
           console.log('https://graph.facebook.com/' + response.id + '/picture');
-          console.log(response);
           myid = response.id;
           myname = response.name;
           profile_img_url = 'https://graph.facebook.com/' + response.id + '/picture';
           init();
-          document.getElementById('status').innerHTML =
-            'Thanks for logging in, ' + response.name + '!';
+          document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
+          FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
+            console.log('conversations: ', conv);
+          });
         });
       }
 
@@ -229,9 +230,6 @@
       // アイコン
       var LeafIcon = L.Icon.extend({
   			options: {
-  				//shadowUrl: 'images/location-icon.png', // 回避策検討: shadowが他のアイコンの上部画像に負ける --> shadow 使わずCSSで対応(border, border-radius, box-shadow)
-          //shadowSize: [100, 100], // shadow画像のサイズ
-          //shadowAnchor: [50, 50], // shadowの相対位置
           iconSize: [80, 80], // プロフィール写真のサイズ
           iconAnchor: [40, 40], // プロフィール写真の相対位置
           popupAnchor: [0, -38] // ポップアップの相対位置
@@ -239,15 +237,18 @@
   		});
       var locationIcon; // ここにfacebookのプロフィール画像を入れる
 
+      // チャット開始
       function init() {
+        // ログイン画面の消去
         $("#login").stop().animate({opacity: 0}, {duration: 600});
         setTimeout(function() {$("#login").hide();}, 600);
         //$('#login').css('display', 'none');
         $('#app').css('display', 'block');
 
+        // Facebookのプロフィール画像をアイコンに設定
         locationIcon = new LeafIcon({iconUrl: profile_img_url});
 
-
+        // チャット初期投稿
         firstPost = false;
         socket.emit('chat message', {
           id: myid,
@@ -258,7 +259,6 @@
         $('#m').val('');
         initMap();
 
-        // チャット
         // フォームの送信
         $('form').submit(function() {
           console.log("submit!!: ", $('#m').val());
@@ -277,23 +277,6 @@
 
             return false;
           }
-          // 初回
-          // [Plan] Facebook Login 実装したらアカウント名を利用する
-          // [Plan] formのsubmit時じゃなくてログイン後実行('チャットに参加しました'のポスト)
-          /*else {
-            firstPost = false;
-            //myname = $('#m').val();
-            $('input').attr('placeholder', '');
-            socket.emit('chat message', {
-              name: myname,
-              text: 'チャットに参加しました'
-            });
-            currentMsg = 'チャットに参加しました';
-            $('#m').val('');
-            initMap();
-
-            return false;
-          }*/
         });
         // メッセージの取得('chat message': チャット用のメッセージ)
         // msg: { text: text, name: user name }
@@ -328,7 +311,7 @@
       }
 
 
-      // マップ
+      // マップ開始
       // 現在位置の取得と監視
       function initMap() {
         var options = { maximumAge: 600000, timeout: 10000, enableHighAccuracy: false };
@@ -350,6 +333,7 @@
         }
       }
 
+      // マップの作成
       function createMap(lat, long, msg) {
         mylat = lat;
         mylong = long;
@@ -374,7 +358,6 @@
         $('.mylocation').click(function() {
           map.panTo([mylat, mylong]);
         });
-        //var marker = L.marker([lat, long], { alt: 'people', title: myname }).bindLabel(myname, { noHide: true }).addTo(map);
         var marker = L.marker([lat, long], { alt: 'people', title: myname, icon: locationIcon }).addTo(map);
         marker.bindPopup('<p>' + msg + '</p>', { closeButton: false }).openPopup();
         mytrack = L.polyline([[lat, long]], { color: 'red', weight: 2, dashArray: '5, 5' }).addTo(map);
@@ -407,18 +390,19 @@
 
 
         // メッセージの取得('map message': マップ用のメッセージ)
-        // msg: { name: user name, lat: latitude, long: longitude }
         socket.on('map message', function(msg) {
           console.log('map!!: ', msg);
           var othernames = [];
           var nosamename = true;
 
           console.log(markers[0]);
+          // 緯度経度の更新
           for(var i=0; i<markers.length; i++) {
             console.log(markers[i]);
             if(markers[i].id === msg.id) {
               nosamename = false;
               markers[i].marker.setLatLng([msg.lat, msg.long]);
+              // 自分の緯度経度の更新
               if(msg.id === myid) {
                 mylat = msg.lat;
                 mylong = msg.long;
@@ -428,9 +412,10 @@
             }
           }
 
+          // 地図上に存在しないユーザー
           if(nosamename === true) {
             console.log("NEW PEOPLE!!");
-            //var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).bindLabel(msg.name, { noHide: true }).addTo(map);
+            // ユーザーのFacebookプロフィール画像を取得
             $.get('https://graph.facebook.com/' + msg.id + '/picture?redirect=false&access_token=' + mytoken, function(response){
               console.log("Data Loaded: " + response.data.url);
               var yourIcon = new LeafIcon({iconUrl: response.data.url});
@@ -444,15 +429,6 @@
                 currentMsg: ''
               });
             });
-            /*var yourIcon = new LeafIcon({iconUrl: 'https://graph.facebook.com/' + msg.id + '/picture'});
-            var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name, icon: yourIcon }).addTo(map);
-            marker.bindPopup('<p>' + msg.name + '登場！</p>', { closeButton: false }).openPopup();
-            map.panTo([msg.lat, msg.long]);
-            markers.push({
-              marker: marker,
-              name: msg.name,
-              currentMsg: ''
-            });*/
           }
         });
       }
