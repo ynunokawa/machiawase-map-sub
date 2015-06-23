@@ -256,8 +256,9 @@
             console.log('conversations: ', conv);
             for(var i=0; i<5; i++) {
               conversations.push({ id: conv.data[i].id, title: 'no title'});
+              //var party = '';
               for(var j=0; j<conv.data[i].participants.data.length; j++) {
-                party = party + conv.data[i].participants.data[j].name + " ";
+                //party = party + conv.data[i].participants.data[j].name + " ";
                 $('.room' + String(i+1) + '> .panel-body').append(createMemberIcon(conv.data[i].participants.data[j].id));
               }
               $('.room' + String(i+1) + '> .panel-heading').attr('id', conv.data[i].id);
