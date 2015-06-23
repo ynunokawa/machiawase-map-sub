@@ -353,8 +353,8 @@
         $("#rooms").stop().animate({opacity: 0}, {duration: 600});
         setTimeout(function() {
           $("#rooms").hide();
-          $('#chatmap').css('display', 'block');
         }, 600);
+        $('#chatmap').css('display', 'block');
 
         // Facebookのプロフィール画像をアイコンに設定
         locationIcon = new LeafIcon({iconUrl: profile_img_url});
