@@ -114,6 +114,14 @@
             <div class="panel-heading">るーむ３</div>
             <div class="panel-body"></div>
           </div>
+          <div class="room3 panel panel-default">
+            <div class="panel-heading">るーむ４</div>
+            <div class="panel-body"></div>
+          </div>
+          <div class="room3 panel panel-default">
+            <div class="panel-heading">るーむ５</div>
+            <div class="panel-body"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -246,7 +254,7 @@
 
           FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
             console.log('conversations: ', conv);
-            for(var i=0; i<3; i++) {
+            for(var i=0; i<5; i++) {
               conversations.push({ id: conv.data[i].id, title: 'no title'});
               var party = '';
               for(var j=0; j<conv.data[i].participants.data.length; j++) {
@@ -273,12 +281,14 @@
       function viewRooms() {
         // ログイン画面の消去
         $("#login").stop().animate({opacity: 0}, {duration: 600});
-        setTimeout(function() {$("#login").hide();}, 600);
-        $('#rooms').css('display', 'block');
+        setTimeout(function() {
+          $("#login").hide();
+          $('#rooms').css('display', 'block');
+        }, 600);
 
         $('.panel-default').click(function(e) {
           console.log(e);
-          init();
+          init(e.target.id);
         });
       }
 
@@ -309,7 +319,7 @@
       var locationIcon; // ここにfacebookのプロフィール画像を入れる
 
       // チャット開始
-      function init() {
+      function init(roomid) {
         // ログイン画面の消去
         //$("#login").stop().animate({opacity: 0}, {duration: 600});
         //setTimeout(function() {$("#login").hide();}, 600);
