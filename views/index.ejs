@@ -114,11 +114,11 @@
             <div class="panel-heading">るーむ３</div>
             <div class="panel-body"></div>
           </div>
-          <div class="room3 panel panel-default">
+          <div class="room4 panel panel-default">
             <div class="panel-heading">るーむ４</div>
             <div class="panel-body"></div>
           </div>
-          <div class="room3 panel panel-default">
+          <div class="room5 panel panel-default">
             <div class="panel-heading">るーむ５</div>
             <div class="panel-body"></div>
           </div>
@@ -256,7 +256,6 @@
             console.log('conversations: ', conv);
             for(var i=0; i<5; i++) {
               conversations.push({ id: conv.data[i].id, title: 'no title'});
-              var party = '';
               for(var j=0; j<conv.data[i].participants.data.length; j++) {
                 party = party + conv.data[i].participants.data[j].name + " ";
                 $('.room' + String(i+1) + '> .panel-body').append(createMemberIcon(conv.data[i].participants.data[j].id));
