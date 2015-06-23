@@ -6,7 +6,13 @@
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 26px "Meiryo", Helvetica, Arial; }
+      html, body {
+        font: 26px "Meiryo", Helvetica, Arial;
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
       /*form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 50%; }*/
       form { background: #E6FAFA; padding: 3px; bottom: 0; width: 100%; font-size: 64px; }
       form input { border: 0; padding: 10px; width: 80%; margin-left: .5%; margin-right: 1%; }
@@ -15,7 +21,7 @@
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #E6FAFA; }
 
-      #head { background:-webkit-gradient(linear, 80% 20%, 10% 21%, from(#00D0CE), to(#008382)); padding: 3px; bottom: 0; width: 100%; }
+      #head {background: linear-gradient(to right, #00D0CE, #008382); padding: 3px; bottom: 0; width: 100%; }
       .title { padding: 5px 3px 0 10px; font-size: 32px; color: #fff; }
       .mylocation { margin-left: 10px; margin-top: 80px; z-index: 999; display: none; }
       .mylocation-icon { height: 10px; width: 10px;}
@@ -36,35 +42,75 @@
         -moz-border-radius: 40px;
         border: 4px #fff solid;
         box-shadow: 0 0 0 2px #00D0CE, 0 8px 5px rgba(0,0,0,0.4);
+        z-index: 999999999;
+      }
+
+      #login {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, #00D0CE, #008382);
+        /*background:-webkit-gradient(linear, 80% 20%, 10% 21%, from(#00D0CE), to(#008382));*/
+      }
+      .login-btn {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        height: 100px;
+        max-width: 100%;
+        max-height: 100%;
+        text-align: center;
+      }
+      #status {
+        font: 48px "Meiryo", Helvetica, Arial;
+        color: white;
+      }
+      #app {
+        display: none;
       }
     </style>
   </head>
   <body>
-    <div class="row">
-      <div class="col-md-12">
-        <div id="head">
-          <p class="title">待ち合わせおしゃべりマップ</p>
-          <!--<a href="/auth/facebook">Login with Facebook</a>-->
-        </div>
+    <div id="login">
+      <div class="login-btn">
+        <div id="status">アプリを使うには<br>Facebookログインしてね！</div>
+        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+        </fb:login-button>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div id="map">
-          <div class="mylocation leaflet-bar leaflet-control">
-            <a href="#"><img class="mylocation-icon" src="images/mylocation.png"/></a>
+
+    <div id="app">
+      <div class="row">
+        <div class="col-md-12">
+          <div id="head">
+            <p class="title">待ち合わせおしゃべりマップ</p>
+            <!--<a href="/auth/facebook">Login with Facebook</a>-->
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <ul id="messages"></ul>
+      <div class="row">
+        <div class="col-md-6">
+          <div id="map">
+            <div class="mylocation leaflet-bar leaflet-control">
+              <a href="#"><img class="mylocation-icon" src="images/mylocation.png"/></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <ul id="messages"></ul>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <form action="">
-          <input id="m" autocomplete="off" placeholder="まずは名前を入力" /><button>送信</button>
-        </form>
+      <div class="row">
+        <div class="col-md-12">
+          <form action="">
+            <input id="m" autocomplete="off" placeholder="" /><button>送信</button>
+          </form>
+        </div>
       </div>
     </div>
 
@@ -74,9 +120,118 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
     <script src="http://cdn.jsdelivr.net/leaflet.esri/latest/esri-leaflet.js"></script>
     <script>
+      // Facebook ログイン
+
+      var myid = "";
+      var profile_img_url = "";
+      var mytoken = "";
+      var myname = "";
+      var conversations = [];
+
+      // This is called with the results from from FB.getLoginStatus().
+      function statusChangeCallback(response) {
+        console.log('statusChangeCallback');
+        console.log(response);
+        // The response object is returned with a status field that lets the
+        // app know the current login status of the person.
+        // Full docs on the response object can be found in the documentation
+        // for FB.getLoginStatus().
+        if (response.status === 'connected') {
+          // Logged into your app and Facebook.
+          mytoken = response.authResponse.accessToken;
+          testAPI();
+        } else if (response.status === 'not_authorized') {
+          // The person is logged into Facebook, but not your app.
+          document.getElementById('status').innerHTML = 'アプリ使うにはFacebookログインしてね！';
+        } else {
+          // The person is not logged into Facebook, so we're not sure if
+          // they are logged into this app or not.
+          document.getElementById('status').innerHTML = 'アプリ使うにはFacebookログインしてね！';
+        }
+      }
+
+      // This function is called when someone finishes with the Login
+      // Button.  See the onlogin handler attached to it in the sample
+      // code below.
+      function checkLoginState() {
+        FB.login(function(response) {
+          statusChangeCallback(response);
+        }, {scope: 'public_profile, user_friends, read_mailbox, read_page_mailboxes, manage_pages'});
+        /*FB.getLoginStatus(function(response) {
+          statusChangeCallback(response);
+        });*/
+      }
+
+      window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '1603607446564303',
+        cookie     : true,  // enable cookies to allow the server to access
+                            // the session
+        xfbml      : true,  // parse social plugins on this page
+        version    : 'v2.2' // use version 2.2
+      });
+
+      // Now that we've initialized the JavaScript SDK, we call
+      // FB.getLoginStatus().  This function gets the state of the
+      // person visiting this page and can return one of three states to
+      // the callback you provide.  They can be:
+      //
+      // 1. Logged into your app ('connected')
+      // 2. Logged into Facebook, but not your app ('not_authorized')
+      // 3. Not logged into Facebook and can't tell if they are logged into
+      //    your app or not.
+      //
+      // These three cases are handled in the callback function.
+
+      FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+      });
+
+      };
+
+      // Load the SDK asynchronously
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+
+      // Here we run a very simple test of the Graph API after login is
+      // successful.  See statusChangeCallback() for when this call is made.
+      function testAPI() {
+        console.log('Welcome!  Fetching your information.... ');
+        FB.api('/me', function(response) {
+          console.log('Successful login for: ' + response.name);
+          console.log('https://graph.facebook.com/' + response.id + '/picture');
+          myid = response.id;
+          myname = response.name;
+          profile_img_url = 'https://graph.facebook.com/' + response.id + '/picture';
+          init();
+          document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
+
+          FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
+            console.log('conversations: ', conv);
+            for(var i=0; i<conv.data.length; i++) {
+              conversations.push({ id: conv.data[i].id, title: 'no title'});
+            }
+          });
+        });
+      }
+
+
+      //チャットルーム（メッセンジャー連携）
+
+
+
+      // アプリ
+      //init();
+
+      // チャット
       // チャット用の変数
       var firstPost = true;
-      var myname = null;
+      //var myname = null;
       var socket = io();
       var currentMsg = "";
 
@@ -85,88 +240,91 @@
       var markers = []; // { marker: marker object, name: user name, currentMsg: current masage }
       var mylat, mylong;
       var mytrack;
-
-      // チャット
-      // フォームの送信
-      $('form').submit(function() {
-        console.log("submit!!: ", $('#m').val());
-        // 2回目以降
-        if(firstPost === false) {
-          socket.emit('chat message', {
-            name: myname,
-            text: $('#m').val()
-          });
-          currentMsg = $('#m').val();
-          $('#m').val('');
-
-          markers[0].currentMsg = currentMsg;
-          markers[0].marker.setPopupContent('<p>' + currentMsg + '</p>');
-
-          return false;
-        }
-        // 初回
-        // [Plan] Facebook Login 実装したらアカウント名を利用する
-        // [Plan] formのsubmit時じゃなくてログイン後実行('チャットに参加しました'のポスト)
-        else {
-          firstPost = false;
-          myname = $('#m').val();
-          $('input').attr('placeholder', '');
-          socket.emit('chat message', {
-            name: myname,
-            text: 'チャットに参加しました'
-          });
-          currentMsg = 'チャットに参加しました';
-          $('#m').val('');
-          initMap();
-
-          return false;
-        }
-      });
-      // メッセージの取得('chat message': チャット用のメッセージ)
-      // msg: { text: text, name: user name }
-      socket.on('chat message', function(msg) {
-        console.log('chat!!: ', msg);
-
-        var msgtxt = msg.name + ': ' + msg.text;
-        var usr = msg.name;
-        var txt = msg.text;
-        $('#messages').append($('<li/>').text(msgtxt));
-
-        // メッセージリスト13行目以降自動スクロール
-        if($('#messages li').length > 12) {
-          console.log("li > 12");
-          $('#messages').animate({ scrollTop: 49 * $('#messages li').length });
-        }
-
-        // メッセージを送信したユーザーのマーカーのポップアップを更新
-        for(var i=0; i<markers.length; i++) {
-          console.log(markers[i]);
-          console.log(usr);
-          if(markers[i].name == usr) {
-            console.log(usr, txt);
-            console.log(markers[i].marker);
-            markers[i].currentMsg = txt;
-            markers[i].marker.closePopup();
-            markers[i].marker.bindPopup('<p>' + txt + '</p>', { closeButton: false }).openPopup();
-          }
-        }
-      });
-
-      // マップ
       // アイコン
       var LeafIcon = L.Icon.extend({
   			options: {
-  				//shadowUrl: 'images/location-icon.png', // 回避策検討: shadowが他のアイコンの上部画像に負ける --> shadow 使わずCSSで対応(border, border-radius, box-shadow)
-          //shadowSize: [100, 100], // shadow画像のサイズ
-          //shadowAnchor: [50, 50], // shadowの相対位置
           iconSize: [80, 80], // プロフィール写真のサイズ
           iconAnchor: [40, 40], // プロフィール写真の相対位置
           popupAnchor: [0, -38] // ポップアップの相対位置
   			}
   		});
-      var locationIcon = new LeafIcon({iconUrl: 'images/profile.jpg'}); // ここにfacebookのプロフィール画像を入れる
+      var locationIcon; // ここにfacebookのプロフィール画像を入れる
+
+      // チャット開始
+      function init() {
+        // ログイン画面の消去
+        $("#login").stop().animate({opacity: 0}, {duration: 600});
+        setTimeout(function() {$("#login").hide();}, 600);
+        //$('#login').css('display', 'none');
+        $('#app').css('display', 'block');
+
+        // Facebookのプロフィール画像をアイコンに設定
+        locationIcon = new LeafIcon({iconUrl: profile_img_url});
+
+        // チャット初期投稿
+        firstPost = false;
+        socket.emit('chat message', {
+          id: myid,
+          name: myname,
+          text: 'チャットに参加しました'
+        });
+        currentMsg = 'チャットに参加しました';
+        $('#m').val('');
+        initMap();
+
+        // フォームの送信
+        $('form').submit(function() {
+          console.log("submit!!: ", $('#m').val());
+          // 2回目以降
+          if(firstPost === false) {
+            socket.emit('chat message', {
+              id: myid,
+              name: myname,
+              text: $('#m').val()
+            });
+            currentMsg = $('#m').val();
+            $('#m').val('');
+
+            markers[0].currentMsg = currentMsg;
+            markers[0].marker.setPopupContent('<p>' + currentMsg + '</p>');
+
+            return false;
+          }
+        });
+        // メッセージの取得('chat message': チャット用のメッセージ)
+        // msg: { text: text, name: user name }
+        socket.on('chat message', function(msg) {
+          console.log('chat!!: ', msg);
+
+          var msgtxt = msg.name + ': ' + msg.text;
+          var usr = msg.name;
+          var fbid = msg.id;
+          var txt = msg.text;
+          $('#messages').append($('<li/>').text(msgtxt));
+
+          // メッセージリスト13行目以降自動スクロール
+          if($('#messages li').length > 12) {
+            console.log("li > 12");
+            $('#messages').animate({ scrollTop: 49 * $('#messages li').length });
+          }
+
+          // メッセージを送信したユーザーのマーカーのポップアップを更新
+          for(var i=0; i<markers.length; i++) {
+            console.log(markers[i]);
+            console.log(usr);
+            if(markers[i].id == fbid) {
+              console.log(usr, txt);
+              console.log(markers[i].marker);
+              markers[i].currentMsg = txt;
+              markers[i].marker.closePopup();
+              markers[i].marker.bindPopup('<p>' + txt + '</p>', { closeButton: false }).openPopup();
+            }
+          }
+        });
+      }
 
 
+      // マップ開始
       // 現在位置の取得と監視
       function initMap() {
         var options = { maximumAge: 600000, timeout: 10000, enableHighAccuracy: false };
@@ -180,6 +338,7 @@
 
           // 位置の送信
           socket.emit('map message', {
+            id: myid,
             name: myname,
             lat: 0,
             long: 0
@@ -187,6 +346,7 @@
         }
       }
 
+      // マップの作成
       function createMap(lat, long, msg) {
         mylat = lat;
         mylong = long;
@@ -211,13 +371,13 @@
         $('.mylocation').click(function() {
           map.panTo([mylat, mylong]);
         });
-        //var marker = L.marker([lat, long], { alt: 'people', title: myname }).bindLabel(myname, { noHide: true }).addTo(map);
         var marker = L.marker([lat, long], { alt: 'people', title: myname, icon: locationIcon }).addTo(map);
         marker.bindPopup('<p>' + msg + '</p>', { closeButton: false }).openPopup();
         mytrack = L.polyline([[lat, long]], { color: 'red', weight: 2, dashArray: '5, 5' }).addTo(map);
         console.log("add marker: ", marker);
         markers.push({
           marker: marker,
+          id: myid,
           name: myname,
           currentMsg: msg
         });
@@ -237,24 +397,26 @@
         socket.emit('map message', {
           name: myname,
           lat: lat,
-          long: long
+          long: long,
+          id: myid
         });
 
 
         // メッセージの取得('map message': マップ用のメッセージ)
-        // msg: { name: user name, lat: latitude, long: longitude }
         socket.on('map message', function(msg) {
           console.log('map!!: ', msg);
           var othernames = [];
           var nosamename = true;
 
           console.log(markers[0]);
+          // 緯度経度の更新
           for(var i=0; i<markers.length; i++) {
             console.log(markers[i]);
-            if(markers[i].name === msg.name) {
+            if(markers[i].id === msg.id) {
               nosamename = false;
               markers[i].marker.setLatLng([msg.lat, msg.long]);
-              if(msg.name === myname) {
+              // 自分の緯度経度の更新
+              if(msg.id === myid) {
                 mylat = msg.lat;
                 mylong = msg.long;
                 map.panTo([msg.lat, msg.long]);
@@ -263,16 +425,22 @@
             }
           }
 
+          // 地図上に存在しないユーザー
           if(nosamename === true) {
             console.log("NEW PEOPLE!!");
-            //var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name }).bindLabel(msg.name, { noHide: true }).addTo(map);
-            var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name, icon: locationIcon }).addTo(map);
-            marker.bindPopup('<p>' + msg.name + '登場！</p>', { closeButton: false }).openPopup();
-            map.panTo([msg.lat, msg.long]);
-            markers.push({
-              marker: marker,
-              name: msg.name,
-              currentMsg: ''
+            // ユーザーのFacebookプロフィール画像を取得
+            $.get('https://graph.facebook.com/' + msg.id + '/picture?redirect=false&access_token=' + mytoken, function(response){
+              console.log("Data Loaded: " + response.data.url);
+              var yourIcon = new LeafIcon({iconUrl: response.data.url});
+              var marker = L.marker([msg.lat, msg.long], { alt: 'people', title: msg.name, icon: yourIcon }).addTo(map);
+              marker.bindPopup('<p>' + msg.name + '登場！</p>', { closeButton: false }).openPopup();
+              map.panTo([msg.lat, msg.long]);
+              markers.push({
+                marker: marker,
+                id: msg.id,
+                name: msg.name,
+                currentMsg: ''
+              });
             });
           }
         });
@@ -287,7 +455,8 @@
         socket.emit('map message', {
           name: myname,
           lat: lat,
-          long: long
+          long: long,
+          id: myid
         });
       }
 
