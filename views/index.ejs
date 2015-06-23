@@ -309,9 +309,11 @@
       // チャット開始
       function init() {
         // ログイン画面の消去
-        $("#login").stop().animate({opacity: 0}, {duration: 600});
-        setTimeout(function() {$("#login").hide();}, 600);
+        //$("#login").stop().animate({opacity: 0}, {duration: 600});
+        //setTimeout(function() {$("#login").hide();}, 600);
         //$('#login').css('display', 'none');
+        $("#rooms").stop().animate({opacity: 0}, {duration: 600});
+        setTimeout(function() {$("#rooms").hide();}, 600);
         $('#app').css('display', 'block');
 
         // Facebookのプロフィール画像をアイコンに設定
