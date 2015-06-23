@@ -284,8 +284,9 @@
         // ログイン画面の消去
         $("#login").stop().animate({opacity: 0}, {duration: 600});
         setTimeout(function() {
-          $("#login").hide();
+          // #loginをhideしてから#roomsをshowするとマップの幅が一瞬0になるのか地図表示がおかしい＆ポップアップレイアウトが崩れる
           $('#rooms').css('display', 'block');
+          $("#login").hide();
         }, 600);
 
         $('.panel-default').click(function(e) {
