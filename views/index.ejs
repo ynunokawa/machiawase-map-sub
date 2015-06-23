@@ -90,6 +90,9 @@
     <div id="rooms">
       <div class="row">
         <div class="col-md-12">
+          <div id="head">
+            <p class="title">待ち合わせおしゃべりマップ</p>
+          </div>
           <div id="room1" class="room1 panel panel-default">
             <div class="panel-heading">Room ID</div>
             <div class="panel-body">Room Member</div>
@@ -111,7 +114,6 @@
         <div class="col-md-12">
           <div id="head">
             <p class="title">待ち合わせおしゃべりマップ</p>
-            <!--<a href="/auth/facebook">Login with Facebook</a>-->
           </div>
         </div>
       </div>
@@ -241,8 +243,8 @@
               for(var j=0; j<conv.data[i].participants.data.length; j++) {
                 party = party + conv.data[i].participants.data[j].name + " ";
               }
-              $('.room' + String(i) + '> panel-heading').html(conv.data[i].id);
-              $('.room' + String(i) + '> panel-body').html(party);
+              $('.room' + String(i) + '> .panel-heading').html(conv.data[i].id);
+              $('.room' + String(i) + '> .panel-body').html(party);
             }
             viewRooms();
           });
