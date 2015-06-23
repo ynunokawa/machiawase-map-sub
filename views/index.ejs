@@ -433,14 +433,14 @@
         }
         else {
           // 現在位置取得できなくてもマップ表示
-          createMap(0, 0, '現在位置を取得できませんでした！GPSはONになってるかな？');
+          createMap(35.67744, 139.739, '現在位置を取得できませんでした！GPSはONになってるかな？');
 
           // 位置の送信
           socket.emit('map message', {
             id: myid,
             name: myname,
-            lat: 0,
-            long: 0
+            lat: 35.67744,
+            long: 139.739
           });
         }
       }
@@ -564,13 +564,13 @@
         console.log(e);
 
         // 現在位置取得できなくてもマップ表示
-        createMap(0, 0, '現在位置を取得できませんでした！GPSはONになってるかな？');
+        createMap(35.67744, 139.739, '現在位置を取得できませんでした！GPSはONになってるかな？');
 
         // 位置の送信
         socket.emit('map message', {
           name: myname,
-          lat: 0,
-          long: 0,
+          lat: 35.67744,
+          long: 139.739,
           id: myid
         });
       }
