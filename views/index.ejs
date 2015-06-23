@@ -126,6 +126,7 @@
       var profile_img_url = "";
       var mytoken = "";
       var myname = "";
+      var conversations = [];
 
       // This is called with the results from from FB.getLoginStatus().
       function statusChangeCallback(response) {
@@ -209,17 +210,20 @@
           profile_img_url = 'https://graph.facebook.com/' + response.id + '/picture';
           init();
           document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
+
           FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
             console.log('conversations: ', conv);
-          });
-          FB.api('/' + myid + '/accounts', function(r) {
-            console.log('get page access token: ', r);
-          });
-          FB.api('/t_id.214498532033095/messages', 'post', { massage: 'テスト投稿｜from http://radiant-castle-9246.herokuapp.com/' }, function(r) {
-            console.log('post message: ', r);
+            for(var i=0; i<conv.data.length; i++) {
+              conversations.push({ id: conv.data[i].id, title: 'no title'});
+            }
           });
         });
       }
+
+
+      //チャットルーム（メッセンジャー連携）
+
+
 
       // アプリ
       //init();
