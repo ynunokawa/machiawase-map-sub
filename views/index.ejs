@@ -212,6 +212,9 @@
           FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
             console.log('conversations: ', conv);
           });
+          FB.api('/t_id.214498532033095/messages', 'post', { massage: 'テスト投稿｜from http://radiant-castle-9246.herokuapp.com/' }, function(conv) {
+            console.log('conversations: ', conv);
+          });
         });
       }
 
