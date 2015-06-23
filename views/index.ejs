@@ -257,10 +257,7 @@
               //$('.room' + String(i+1) + '> .panel-heading').html(conv.data[i].id);
               //$('.room' + String(i+1) + '> .panel-body').html(party);
             }
-            $('panel-default').click(function(e) {
-              console.log(e);
-              init();
-            });
+
             viewRooms();
           });
         });
@@ -278,6 +275,11 @@
         $("#login").stop().animate({opacity: 0}, {duration: 600});
         setTimeout(function() {$("#login").hide();}, 600);
         $('#rooms').css('display', 'block');
+
+        $('.panel-default').click(function(e) {
+          console.log(e);
+          init();
+        });
       }
 
 
