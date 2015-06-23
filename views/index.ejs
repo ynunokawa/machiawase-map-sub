@@ -70,8 +70,19 @@
         font: 48px "Meiryo", Helvetica, Arial;
         color: white;
       }
+      #rooms {
+        display: none;
+      }
       #app {
         display: none;
+      }
+      .member-icon {
+        border-radius: 40px;
+        -webkit-border-radius: 40px;
+        -moz-border-radius: 40px;
+        border: 4px #fff solid;
+        box-shadow: 0 0 0 2px #00D0CE;
+        /*z-index: 999999999;*/
       }
     </style>
   </head>
@@ -79,8 +90,31 @@
     <div id="login">
       <div class="login-btn">
         <div id="status">アプリを使うには<br>Facebookログインしてね！</div>
-        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+        <fb:login-button scope="public_profile,email,user_friends,read_mailbox,read_page_mailboxes,manage_pages" onlogin="checkLoginState();">
         </fb:login-button>
+      </div>
+    </div>
+
+    <div id="rooms">
+      <div class="row">
+        <div class="col-md-12">
+          <div id="head">
+            <p class="title">待ち合わせおしゃべりマップ</p>
+            <p></p>
+          </div>
+          <div class="room1 panel panel-default">
+            <div class="panel-heading">るーむ１</div>
+            <div class="panel-body"></div>
+          </div>
+          <div class="room2 panel panel-default">
+            <div class="panel-heading">るーむ２</div>
+            <div class="panel-body"></div>
+          </div>
+          <div class="room3 panel panel-default">
+            <div class="panel-heading">るーむ３</div>
+            <div class="panel-body"></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -89,7 +123,6 @@
         <div class="col-md-12">
           <div id="head">
             <p class="title">待ち合わせおしゃべりマップ</p>
-            <!--<a href="/auth/facebook">Login with Facebook</a>-->
           </div>
         </div>
       </div>
@@ -154,12 +187,12 @@
       // Button.  See the onlogin handler attached to it in the sample
       // code below.
       function checkLoginState() {
-        FB.login(function(response) {
+        /*FB.login(function(response) {
           statusChangeCallback(response);
-        }, {scope: 'public_profile, user_friends, read_mailbox, read_page_mailboxes, manage_pages'});
-        /*FB.getLoginStatus(function(response) {
+        }, {scope: 'public_profile, user_friends, read_mailbox, read_page_mailboxes, manage_pages'});*/
+        FB.getLoginStatus(function(response) {
           statusChangeCallback(response);
-        });*/
+        });
       }
 
       window.fbAsyncInit = function() {
@@ -208,21 +241,46 @@
           myid = response.id;
           myname = response.name;
           profile_img_url = 'https://graph.facebook.com/' + response.id + '/picture';
-          init();
+          //viewRooms();
           document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
 
           FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
             console.log('conversations: ', conv);
-            for(var i=0; i<conv.data.length; i++) {
+            for(var i=0; i<3; i++) {
               conversations.push({ id: conv.data[i].id, title: 'no title'});
+              var party = '';
+              for(var j=0; j<conv.data[i].participants.data.length; j++) {
+                party = party + conv.data[i].participants.data[j].name + " ";
+                $('.room' + String(i+1) + '> .panel-body').append(createMemberIcon(conv.data[i].participants.data[j].id));
+              }
+              $('.room' + String(i+1) + '> .panel-heading').attr('id', conv.data[i].id);
+              //$('.room' + String(i+1) + '> .panel-heading').html(conv.data[i].id);
+              //$('.room' + String(i+1) + '> .panel-body').html(party);
             }
+
+            viewRooms();
           });
         });
       }
 
+      function createMemberIcon(id) {
+        var memberIcon = $('<img/>').attr("src", 'https://graph.facebook.com/' + id + '/picture').addClass('member-icon');
+        return memberIcon;
+      }
+
 
       //チャットルーム（メッセンジャー連携）
+      function viewRooms() {
+        // ログイン画面の消去
+        $("#login").stop().animate({opacity: 0}, {duration: 600});
+        setTimeout(function() {$("#login").hide();}, 600);
+        $('#rooms').css('display', 'block');
 
+        $('.panel-default').click(function(e) {
+          console.log(e);
+          init();
+        });
+      }
 
 
       // アプリ
@@ -253,9 +311,11 @@
       // チャット開始
       function init() {
         // ログイン画面の消去
-        $("#login").stop().animate({opacity: 0}, {duration: 600});
-        setTimeout(function() {$("#login").hide();}, 600);
+        //$("#login").stop().animate({opacity: 0}, {duration: 600});
+        //setTimeout(function() {$("#login").hide();}, 600);
         //$('#login').css('display', 'none');
+        $("#rooms").stop().animate({opacity: 0}, {duration: 600});
+        setTimeout(function() {$("#rooms").hide();}, 600);
         $('#app').css('display', 'block');
 
         // Facebookのプロフィール画像をアイコンに設定
