@@ -328,8 +328,10 @@
         //setTimeout(function() {$("#login").hide();}, 600);
         //$('#login').css('display', 'none');
         $("#rooms").stop().animate({opacity: 0}, {duration: 600});
-        setTimeout(function() {$("#rooms").hide();}, 600);
-        $('#app').css('display', 'block');
+        setTimeout(function() {
+          $("#rooms").hide();
+          $('#app').css('display', 'block');
+        }, 600);
 
         // Facebookのプロフィール画像をアイコンに設定
         locationIcon = new LeafIcon({iconUrl: profile_img_url});
