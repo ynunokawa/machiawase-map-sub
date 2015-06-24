@@ -280,19 +280,28 @@
 
           FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
             console.log('conversations: ', conv);
-            for(var i=0; i<5; i++) {
-              conversations.push({ id: conv.data[i].id, title: 'no title'});
-              //var party = '';
-              for(var j=0; j<conv.data[i].participants.data.length; j++) {
-                //party = party + conv.data[i].participants.data[j].name + " ";
-                $('.room' + String(i+1) + '> .panel-body').append(createMemberIcon(conv.data[i].participants.data[j].id));
+            if(conv.data.length > 0) {
+              for(var i=0; i<5; i++) {
+                if(conv.data[i]) {
+                  conversations.push({ id: conv.data[i].id, title: 'no title'});
+                  //var party = '';
+                  for(var j=0; j<conv.data[i].participants.data.length; j++) {
+                    //party = party + conv.data[i].participants.data[j].name + " ";
+                    $('.room' + String(i+1) + '> .panel-body').append(createMemberIcon(conv.data[i].participants.data[j].id));
+                  }
+                  $('.room' + String(i+1) + '> .panel-heading').attr('id', conv.data[i].id);
+                  //$('.room' + String(i+1) + '> .panel-heading').html(conv.data[i].id);
+                  //$('.room' + String(i+1) + '> .panel-body').html(party);
+                }
+                else {
+                  $('.room' + String(i+1)).css('display', 'none');
+                }
               }
-              $('.room' + String(i+1) + '> .panel-heading').attr('id', conv.data[i].id);
-              //$('.room' + String(i+1) + '> .panel-heading').html(conv.data[i].id);
-              //$('.room' + String(i+1) + '> .panel-body').html(party);
+              viewRooms();
             }
-
-            viewRooms();
+            else {
+              document.getElementById('status').innerHTML = 'メッセンジャー グループが1つもありません。Facebook あるいは Messenger アプリからるーむを共有したい仲間にメッセージを送ってメッセンジャー グループを作成してください。';
+            }
           });
         });
       }
