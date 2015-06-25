@@ -23,8 +23,17 @@
 
       #head {background: linear-gradient(to right, #00D0CE, #008382); padding: 3px; bottom: 0; width: 100%; }
       .title { padding: 5px 3px 0 10px; font-size: 36px; color: #fff; }
-      .mylocation { margin-left: 10px; margin-top: 80px; z-index: 999; display: none; }
-      .mylocation-icon { height: 10px; width: 10px;}
+      .mylocation { margin-left: 10px; margin-top: 120px; z-index: 999; display: none; }
+      .mylocation-icon { height: 30px; width: 30px; margin-top: 10px;}
+
+      .leaflet-bar a, .leaflet-bar a:hover {
+        width: 52px;
+        height: 52px;
+        line-height: 52px;
+      }
+      .leaflet-control-zoom-in, .leaflet-control-zoom-out {
+        font: bold 36px 'Lucida Console', Monaco, monospace;
+      }
 
       #map { margin: 0; padding: 0; height: 600px; width: 100%; }
       p { font-size: 26px; }
