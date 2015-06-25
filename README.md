@@ -1,16 +1,27 @@
 # machiawase-map
 
-Socket I/Oでメッセージと現在地をリアルタイムに共有してすれ違いのない待ち合わせを実現しよう(｀・ω・´)
-
-You and I can always meet at somewhere using this app sharing our messages and locations.
+On the machiawase-map, you can always meet somebody (Facebook Friends only) at somewhere and share your message and location.
 
 ## How to use?
 
-Node.js 環境の Heroku にデプロイして実行してみて。
+1. Register the app and get the app id in [Facebook Developers](https://developers.facebook.com/)
 
-Let's deploy the app into heroku with Node.js.
+1. Add Testers for the app.
+
+1. Overwrite `appId      : '<App ID>'` in views/index.ejs.
+
+1. Let's deploy the app into heroku with Node.js.
+
 
 * [Getting Started with Node.js on Heroku | Deploy the app](https://devcenter.heroku.com/articles/getting-started-with-nodejs#deploy-the-app)
+
+## What's room?
+
+Room is a chat room and a map.
+
+The room list is generated based on latest 5 groups on Messenger. So it is only a group member that you can communicate on a room.
+
+[![](readme/rooms-ui.png)]()
 
 ## Resources
 
@@ -22,13 +33,16 @@ Let's deploy the app into heroku with Node.js.
 ## License
 Copyright 2015 Yusuke Nunokawa.
 
-Apache License Version 2.0（「本ライセンス」）に基づいてライセンスされます。あなたがこのファイルを使用するためには、本ライセンスに従わなければなりません。本ライセンスのコピーは下記の場所から入手できます。
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-> http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
-適用される法律または書面での同意によって命じられない限り、本ライセンスに基づいて頒布されるソフトウェアは、明示黙示を問わず、いかなる保証も条件もなしに「現状のまま」頒布されます。本ライセンスでの権利と制限を規定した文言については、本ライセンスを参照してください。
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-ライセンスのコピーは本リポジトリの[ライセンス ファイル](./LICENSE)で利用可能です。
-
-[](EsriJapan Tags: <タグ（半角スペース区切り）>)
-[](EsriJapan Language: <開発言語>)
+A copy of the license is available in the repository's [license.txt](/license.txt) file.
