@@ -321,7 +321,7 @@
           $('#app').css('display', 'block');
         }, 600);
 
-        $('.panel-default').click(function(e) {
+        $('.panel-heading').click(function(e) {
           console.log(e);
           socket.emit('join', {
             roomid: e.target.id,
