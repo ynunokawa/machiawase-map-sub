@@ -70,7 +70,7 @@
         font: 48px "Meiryo", Helvetica, Arial;
         color: white;
       }
-      #rooms {
+      #chatmap {
         display: none;
       }
       #app {
@@ -84,37 +84,16 @@
         box-shadow: 0 0 0 2px #00D0CE;
         /*z-index: 999999999;*/
       }
+      .rooms-title { padding: 5px 3px 0 10px; font-size: 46px; color: #00D0CE; }
     </style>
   </head>
   <body>
     <div id="login">
       <div class="login-btn">
         <div id="status">アプリを使うには<br>Facebookログインしてね！</div>
-        <fb:login-button scope="public_profile,email,user_friends,read_mailbox,read_page_mailboxes,manage_pages" onlogin="checkLoginState();">
+        <fb:login-button scope="public_profile,email,user_friends,read_mailbox" onlogin="checkLoginState();">
+        <!--<fb:login-button scope="public_profile,email,user_friends,read_mailbox" onlogin="checkLoginState();">-->
         </fb:login-button>
-      </div>
-    </div>
-
-    <div id="rooms">
-      <div class="row">
-        <div class="col-md-12">
-          <div id="head">
-            <p class="title">待ち合わせおしゃべりマップ</p>
-            <p></p>
-          </div>
-          <div class="room1 panel panel-default">
-            <div class="panel-heading">るーむ１</div>
-            <div class="panel-body"></div>
-          </div>
-          <div class="room2 panel panel-default">
-            <div class="panel-heading">るーむ２</div>
-            <div class="panel-body"></div>
-          </div>
-          <div class="room3 panel panel-default">
-            <div class="panel-heading">るーむ３</div>
-            <div class="panel-body"></div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -122,7 +101,62 @@
       <div class="row">
         <div class="col-md-12">
           <div id="head">
-            <p class="title">待ち合わせおしゃべりマップ</p>
+            <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
+          </div>
+          <div id="rooms">
+            <p class="rooms-title"><b>おしゃべりるーむ</b></p>
+            <div class="room1 panel panel-default">
+              <div class="panel-heading"><b>るーむ１</b></div>
+              <div class="panel-body"></div>
+            </div>
+            <div class="room2 panel panel-default">
+              <div class="panel-heading"><b>るーむ２</b></div>
+              <div class="panel-body"></div>
+            </div>
+            <div class="room3 panel panel-default">
+              <div class="panel-heading"><b>るーむ３</b></div>
+              <div class="panel-body"></div>
+            </div>
+            <div class="room4 panel panel-default">
+              <div class="panel-heading"><b>るーむ４</b></div>
+              <div class="panel-body"></div>
+            </div>
+            <div class="room5 panel panel-default">
+              <div class="panel-heading"><b>るーむ５</b></div>
+              <div class="panel-body"></div>
+            </div>
+            <p>※「るーむ」は準備中です。どのるーむを選択してもすべてのユーザーが入れる状態です。</p>
+          </div>
+        </div>
+      </div>
+      <div id="chatmap">
+        <div class="row">
+          <div class="col-md-6">
+            <div id="map">
+              <div class="mylocation leaflet-bar leaflet-control">
+                <a href="#"><img class="mylocation-icon" src="images/mylocation.png"/></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <ul id="messages"></ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <form action="">
+              <input id="m" autocomplete="off" placeholder="" /><button>送信</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--<div id="chatmap">
+      <div class="row">
+        <div class="col-md-12">
+          <div id="head">
+            <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
           </div>
         </div>
       </div>
@@ -145,7 +179,7 @@
           </form>
         </div>
       </div>
-    </div>
+    </div>-->
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -246,19 +280,29 @@
 
           FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
             console.log('conversations: ', conv);
-            for(var i=0; i<3; i++) {
-              conversations.push({ id: conv.data[i].id, title: 'no title'});
-              var party = '';
-              for(var j=0; j<conv.data[i].participants.data.length; j++) {
-                party = party + conv.data[i].participants.data[j].name + " ";
-                $('.room' + String(i+1) + '> .panel-body').append(createMemberIcon(conv.data[i].participants.data[j].id));
+            if(conv.data.length > 0) {
+              for(var i=0; i<5; i++) {
+                if(conv.data[i]) {
+                  conversations.push({ id: conv.data[i].id, title: 'no title'});
+                  //var party = '';
+                  for(var j=0; j<conv.data[i].participants.data.length; j++) {
+                    //party = party + conv.data[i].participants.data[j].name + " ";
+                    $('.room' + String(i+1) + '> .panel-body').append(createMemberIcon(conv.data[i].participants.data[j].id));
+                  }
+                  $('.room' + String(i+1) + '> .panel-heading').attr('id', conv.data[i].id);
+                  //$('.room' + String(i+1) + '> .panel-heading').html(conv.data[i].id);
+                  //$('.room' + String(i+1) + '> .panel-body').html(party);
+                }
+                else {
+                  $('.room' + String(i+1)).css('display', 'none');
+                }
               }
-              $('.room' + String(i+1) + '> .panel-heading').attr('id', conv.data[i].id);
-              //$('.room' + String(i+1) + '> .panel-heading').html(conv.data[i].id);
-              //$('.room' + String(i+1) + '> .panel-body').html(party);
+              viewRooms();
             }
-
-            viewRooms();
+            else {
+              $('#status').css('font-size', '24px');
+              document.getElementById('status').innerHTML = 'メッセンジャー グループが1つもありません。Facebook あるいは Messenger アプリからるーむを共有したい仲間にメッセージを送ってメッセンジャー グループを作成してください。';
+            }
           });
         });
       }
@@ -273,12 +317,14 @@
       function viewRooms() {
         // ログイン画面の消去
         $("#login").stop().animate({opacity: 0}, {duration: 600});
-        setTimeout(function() {$("#login").hide();}, 600);
-        $('#rooms').css('display', 'block');
+        setTimeout(function() {
+          $("#login").hide();
+          $('#app').css('display', 'block');
+        }, 600);
 
         $('.panel-default').click(function(e) {
           console.log(e);
-          init();
+          init(e.target.id);
         });
       }
 
@@ -309,14 +355,17 @@
       var locationIcon; // ここにfacebookのプロフィール画像を入れる
 
       // チャット開始
-      function init() {
+      function init(roomid) {
+        console.log('roomid: ', roomid);
         // ログイン画面の消去
         //$("#login").stop().animate({opacity: 0}, {duration: 600});
         //setTimeout(function() {$("#login").hide();}, 600);
         //$('#login').css('display', 'none');
         $("#rooms").stop().animate({opacity: 0}, {duration: 600});
-        setTimeout(function() {$("#rooms").hide();}, 600);
-        $('#app').css('display', 'block');
+        setTimeout(function() {
+          $("#rooms").hide();
+        }, 600);
+        $('#chatmap').css('display', 'block');
 
         // Facebookのプロフィール画像をアイコンに設定
         locationIcon = new LeafIcon({iconUrl: profile_img_url});
@@ -394,14 +443,14 @@
         }
         else {
           // 現在位置取得できなくてもマップ表示
-          createMap(0, 0, '現在位置を取得できませんでした！GPSはONになってるかな？');
+          createMap(35.67744, 139.739, '現在位置を取得できませんでした！GPSはONになってるかな？');
 
           // 位置の送信
           socket.emit('map message', {
             id: myid,
             name: myname,
-            lat: 0,
-            long: 0
+            lat: 35.67744,
+            long: 139.739
           });
         }
       }
@@ -479,7 +528,7 @@
               if(msg.id === myid) {
                 mylat = msg.lat;
                 mylong = msg.long;
-                map.panTo([msg.lat, msg.long]);
+                //map.panTo([msg.lat, msg.long]);
                 mytrack.addLatLng([msg.lat, msg.long]);
               }
             }
@@ -525,13 +574,14 @@
         console.log(e);
 
         // 現在位置取得できなくてもマップ表示
-        createMap(0, 0, '現在位置を取得できませんでした！GPSはONになってるかな？');
+        createMap(35.67744, 139.739, '現在位置を取得できませんでした！GPSはONになってるかな？');
 
         // 位置の送信
         socket.emit('map message', {
           name: myname,
-          lat: 0,
-          long: 0
+          lat: 35.67744,
+          long: 139.739,
+          id: myid
         });
       }
     </script>
