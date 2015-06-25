@@ -8,7 +8,7 @@ function io(server) {
 
     io.on('connection', function (socket) {
       socket.on('join', function(msg) {
-        console.log('MESSAGE: ', msg);
+        console.log('JOIN: ', socket.id);
         var usrobj = {
           'room': msg.roomid,
           'name': msg.name
@@ -39,6 +39,7 @@ function io(server) {
           name: store[idstore[socket.id].id].name,
           text: '退出しました！'
         });
+        delete idstore[socket.id];
       });
     });
 }
