@@ -25,18 +25,18 @@ function io(server) {
         };
         store[msg.id] = usrobj;
         socket.join(msg.roomid);
-        roomid = msg.roomid;
+        socket.join(socket.id);
         //io.emit('join', msg);
       });
 
       socket.on('chat message', function(msg) {
-        var roomid;
         console.log('MESSAGE: ', msg);
+        console.log('ROOM: ', store[msg.id].roomid);
         io.to(store[msg.id].roomid).emit('chat message', msg);
       });
       socket.on('map message', function(msg) {
-        var roomid;
         console.log('MESSAGE: ', msg);
+        console.log('ROOM: ', store[msg.id].roomid);
         io.to(store[msg.id].roomid).emit('map message', msg);
       });
 
