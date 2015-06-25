@@ -27,6 +27,7 @@ function io(server) {
         socket.join(msg.roomid);
         //socket.join(socket.id);
         //io.emit('join', msg);
+        console.log('STORE: ', store);
       });
 
       socket.on('chat message', function(msg) {
