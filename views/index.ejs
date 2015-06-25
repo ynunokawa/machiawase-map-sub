@@ -22,7 +22,7 @@
       #messages li:nth-child(odd) { background: #E6FAFA; }
 
       #head {background: linear-gradient(to right, #00D0CE, #008382); padding: 3px; bottom: 0; width: 100%; }
-      .title { padding: 5px 3px 0 10px; font-size: 32px; color: #fff; }
+      .title { padding: 5px 3px 0 10px; font-size: 36px; color: #fff; }
       .mylocation { margin-left: 10px; margin-top: 80px; z-index: 999; display: none; }
       .mylocation-icon { height: 10px; width: 10px;}
 
@@ -84,9 +84,7 @@
         box-shadow: 0 0 0 2px #00D0CE;
         /*z-index: 999999999;*/
       }
-      .rooms-title { padding: 5px 3px 0 10px; font-size: 46px; color: #00D0CE; }
-
-      .head {background: linear-gradient(to right, #00D0CE, #008382);}
+      .rooms-title { padding: 5px 3px 0 10px; font-size: 46px; color: #00D0CE; }。
     </style>
   </head>
   <body>
@@ -101,22 +99,10 @@
 
     <div id="app">
       <div class="row">
-        <nav class="navbar navbar-default navbar-fixed-top">
-          <div class="container-fluid">
-            <div class="navbar-header">
-              <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-              <ul class="nav navbar-nav navbar-right">
-                <li>るーむ選択へ戻る</li>
-              </ul>
-            </div>
-          </div>
-        </nav>
         <div class="col-md-12">
-          <!--<div id="head">
+          <div id="head">
             <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
-          </div>-->
+          </div>
           <div id="rooms">
             <p class="rooms-title"><b>おしゃべりるーむ</b></p>
             <div class="room1 panel panel-default">
@@ -164,35 +150,6 @@
         </div>
       </div>
     </div>
-
-    <!--<div id="chatmap">
-      <div class="row">
-        <div class="col-md-12">
-          <div id="head">
-            <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div id="map">
-            <div class="mylocation leaflet-bar leaflet-control">
-              <a href="#"><img class="mylocation-icon" src="images/mylocation.png"/></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <ul id="messages"></ul>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <form action="">
-            <input id="m" autocomplete="off" placeholder="" /><button>送信</button>
-          </form>
-        </div>
-      </div>
-    </div>-->
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
