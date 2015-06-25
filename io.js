@@ -25,19 +25,19 @@ function io(server) {
         };
         store[msg.id] = usrobj;
         socket.join(msg.roomid);
-        socket.join(socket.id);
+        //socket.join(socket.id);
         //io.emit('join', msg);
       });
 
       socket.on('chat message', function(msg) {
         console.log('MESSAGE: ', msg);
-        console.log('ROOM: ', store[msg.id].roomid);
-        io.to(store[msg.id].roomid).emit('chat message', msg);
+        console.log('ROOM: ', store[msg.id].room);
+        io.to(store[msg.id].room).emit('chat message', msg);
       });
       socket.on('map message', function(msg) {
         console.log('MESSAGE: ', msg);
-        console.log('ROOM: ', store[msg.id].roomid);
-        io.to(store[msg.id].roomid).emit('map message', msg);
+        console.log('ROOM: ', store[msg.id].room);
+        io.to(store[msg.id].room).emit('map message', msg);
       });
 
       /*socket.on('disconnect', function() {
