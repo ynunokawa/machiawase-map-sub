@@ -17,9 +17,9 @@ function io(server) {
     io.on('connection', function (socket) {
       socket.on('join', function(msg) {
         console.log('MESSAGE: ', msg);
-        socket.set('room': msg.roomid);
-        socket.set('name': msg.name);
-        socket.set('id': msg.id);
+        socket.set('room', msg.roomid);
+        socket.set('name', msg.name);
+        socket.set('id', msg.id);
         socket.join(msg.roomid);
         roomid = msg.roomid;
         //io.emit('join', msg);
