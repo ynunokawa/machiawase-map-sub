@@ -125,7 +125,6 @@
               <div class="panel-heading"><b>るーむ５</b></div>
               <div class="panel-body"></div>
             </div>
-            <p>※「るーむ」は準備中です。どのるーむを選択してもすべてのユーザーが入れる状態です。</p>
           </div>
         </div>
       </div>
@@ -322,8 +321,13 @@
           $('#app').css('display', 'block');
         }, 600);
 
-        $('.panel-default').click(function(e) {
+        $('.panel-heading').click(function(e) {
           console.log(e);
+          socket.emit('join', {
+            roomid: e.target.id,
+            name: myname,
+            id: myid
+          });
           init(e.target.id);
         });
       }
@@ -338,6 +342,7 @@
       //var myname = null;
       var socket = io();
       var currentMsg = "";
+      var myroomid;
 
       // マップ用の変数
       var map;
@@ -357,6 +362,7 @@
       // チャット開始
       function init(roomid) {
         console.log('roomid: ', roomid);
+        myroomid = roomid;
         // ログイン画面の消去
         //$("#login").stop().animate({opacity: 0}, {duration: 600});
         //setTimeout(function() {$("#login").hide();}, 600);
