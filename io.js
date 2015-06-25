@@ -29,7 +29,7 @@ function io(server) {
       });
 
       socket.on('disconnect', function() {
-        console.log('誰かが退出しました');
+        console.log('DISCONNECT: ', socket.id);
         /*socket.leave(roomid);
         io.to(roomid).emit('chat message', {
           id: id,
