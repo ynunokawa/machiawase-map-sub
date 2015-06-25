@@ -32,14 +32,16 @@ function io(server) {
 
       socket.on('disconnect', function() {
         console.log('DISCONNECT: ', socket.id);
-        var _roomid = store[idstore[socket.id].id].room;
-        socket.leave(_roomid);
-        io.to(_roomid).emit('chat message', {
-          id: idstore[socket.id].id,
-          name: store[idstore[socket.id].id].name,
-          text: '退出しました！'
-        });
-        delete idstore[socket.id];
+        if (idstore[socket.id]) {
+          var _roomid = store[idstore[socket.id].id].room;
+          socket.leave(_roomid);
+          io.to(_roomid).emit('chat message', {
+            id: idstore[socket.id].id,
+            name: store[idstore[socket.id].id].name,
+            text: '退出！'
+          });
+          delete idstore[socket.id];
+        }
       });
     });
 }
