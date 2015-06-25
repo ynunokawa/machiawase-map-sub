@@ -85,6 +85,8 @@
         /*z-index: 999999999;*/
       }
       .rooms-title { padding: 5px 3px 0 10px; font-size: 46px; color: #00D0CE; }
+
+      .head {background: linear-gradient(to right, #00D0CE, #008382);}
     </style>
   </head>
   <body>
@@ -99,10 +101,22 @@
 
     <div id="app">
       <div class="row">
-        <div class="col-md-12">
-          <div id="head">
-            <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
+        <nav class="navbar navbar-default navbar-fixed-top">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+              <ul class="nav navbar-nav navbar-right">
+                <li>るーむ選択へ戻る</li>
+              </ul>
+            </div>
           </div>
+        </nav>
+        <div class="col-md-12">
+          <!--<div id="head">
+            <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
+          </div>-->
           <div id="rooms">
             <p class="rooms-title"><b>おしゃべりるーむ</b></p>
             <div class="room1 panel panel-default">
