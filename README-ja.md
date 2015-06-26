@@ -1,4 +1,4 @@
-# machiawase-map
+# Oshaberi Map
 
 [![](readme/top.png)]()
 
