@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Esri Leaflet Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Load Leaflet from their CDN -->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+
+    <!-- Load Esri Leaflet -->
+    <script src='//api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js'></script>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+    <script src='https://rawgit.com/Fragger/Leaflet.Geodesic/master/src/L.Geodesic.js'></script>
+
+    <!-- Make the map fill the entire page -->
+    <style>
+      html, body, #map {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <p id='distance' class='turf-controls'
+        style="position: absolute; right: 5px; top: 5px;"> --
+    </p>
+    <script>
+    var map = L.map('map').setView([51.505, -0.09], 7);
+
+		L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+			maxZoom: 18,
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			id: 'examples.map-i875mjb7'
+		}).addTo(map);
+
+
+		var marker1 = L.marker([51.5, -0.09], {draggable: true}).addTo(map);
+    var marker2 = L.marker([52.5, -0.09], {draggable: true}).addTo(map);
+    console.log(marker1);
+
+    var polyline = L.polyline([[51.5, -0.09], [52.5, -0.09]]).addTo(map);
+    marker1.on('drag', function(e) {
+        calculateDistance();
+    });
+    marker2.on('drag', function(e) {
+        calculateDistance();
+    });
+
+    function calculateDistance() {
+        var linestring = turf.linestring([[marker1._latlng.lng, marker1._latlng.lat],[marker2._latlng.lng, marker2._latlng.lat]]);
+        var bassakwards = linestring.geometry.coordinates.map(function (element) {
+            return [element[1],element[0]];
+        });
+        console.log(bassakwards);
+        polyline.setLatLngs(bassakwards);
+        //var distance = turf.distance(layers[0].toGeoJSON(), layers[1].toGeoJSON(), 'miles').toFixed(3) + ' miles';
+        // Example: http://turfjs.org/examples/turf-distance/
+    }
+
+    </script>
+  </body>
+</html>
