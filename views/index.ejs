@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>待ち合わせマップ: The chat and map with Socket.IO</title>
+    <title>おしゃべりマップ</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
     <style>
@@ -22,7 +22,7 @@
       #messages li:nth-child(odd) { background: #E6FAFA; }
 
       #head {background: linear-gradient(to right, #00D0CE, #008382); padding: 3px; bottom: 0; width: 100%; }
-      .title { padding: 5px 3px 0 10px; font-size: 32px; color: #fff; }
+      .title { padding: 5px 3px 0 10px; font-size: 36px; color: #fff; }
       .mylocation { margin-left: 10px; margin-top: 80px; z-index: 999; display: none; }
       .mylocation-icon { height: 10px; width: 10px;}
 
@@ -60,11 +60,17 @@
         bottom: 0;
         left: 0;
         right: 0;
-        margin: auto;
+        /*margin: auto;*/
+        margin-top: 40%;
         height: 100px;
         max-width: 100%;
         max-height: 100%;
         text-align: center;
+      }
+      .appicon {
+        margin: 10%;
+        height: 300px;
+        width: 300px;
       }
       #status {
         font: 48px "Meiryo", Helvetica, Arial;
@@ -84,12 +90,13 @@
         box-shadow: 0 0 0 2px #00D0CE;
         /*z-index: 999999999;*/
       }
-      .rooms-title { padding: 5px 3px 0 10px; font-size: 46px; color: #00D0CE; }
+      .rooms-title { padding: 5px 3px 0 10px; font-size: 46px; color: #00D0CE; }。
     </style>
   </head>
   <body>
     <div id="login">
       <div class="login-btn">
+        <img class="appicon" src="images/appicon.png"/>
         <div id="status">アプリを使うには<br>Facebookログインしてね！</div>
         <fb:login-button scope="public_profile,email,user_friends,read_mailbox" onlogin="checkLoginState();">
         <!--<fb:login-button scope="public_profile,email,user_friends,read_mailbox" onlogin="checkLoginState();">-->
@@ -150,35 +157,6 @@
         </div>
       </div>
     </div>
-
-    <!--<div id="chatmap">
-      <div class="row">
-        <div class="col-md-12">
-          <div id="head">
-            <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div id="map">
-            <div class="mylocation leaflet-bar leaflet-control">
-              <a href="#"><img class="mylocation-icon" src="images/mylocation.png"/></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <ul id="messages"></ul>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <form action="">
-            <input id="m" autocomplete="off" placeholder="" /><button>送信</button>
-          </form>
-        </div>
-      </div>
-    </div>-->
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>

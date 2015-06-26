@@ -4,15 +4,17 @@ function io(server) {
     var io = socketio.listen(server);
 
     var store = {};
+    var idstore = {};
 
     io.on('connection', function (socket) {
       socket.on('join', function(msg) {
-        console.log('MESSAGE: ', msg);
-        usrobj = {
+        console.log('JOIN: ', socket.id);
+        var usrobj = {
           'room': msg.roomid,
           'name': msg.name
         };
         store[msg.id] = usrobj;
+        idstore[socket.id] = { 'id': msg.id };
         socket.join(msg.roomid);
         console.log('STORE: ', store);
       });
@@ -29,13 +31,17 @@ function io(server) {
       });
 
       socket.on('disconnect', function() {
-        console.log('誰かが退出しました');
-        /*socket.leave(roomid);
-        io.to(roomid).emit('chat message', {
-          id: id,
-          name: name,
-          text: '退出しました！'
-        });*/
+        console.log('DISCONNECT: ', socket.id);
+        if (idstore[socket.id]) {
+          var _roomid = store[idstore[socket.id].id].room;
+          socket.leave(_roomid);
+          io.to(_roomid).emit('chat message', {
+            id: idstore[socket.id].id,
+            name: store[idstore[socket.id].id].name,
+            text: '退出！'
+          });
+          delete idstore[socket.id];
+        }
       });
     });
 }
