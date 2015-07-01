@@ -413,6 +413,19 @@
               markers[i].marker.bindPopup('<p>' + txt + '</p>', { closeButton: false }).openPopup();
             }
           }
+
+          // 誰かがチャット開始したら現在位置を送信
+          if(msg.id !== myid) {
+            if(msg.text === 'チャットに参加しました') {
+              // 位置の送信
+              socket.emit('map message', {
+                name: myname,
+                lat: mylat,
+                long: mylong,
+                id: myid
+              });
+            }
+          }
         });
       }
 
