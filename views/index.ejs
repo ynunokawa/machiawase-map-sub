@@ -110,7 +110,7 @@
           <div id="head">
             <p class="title"><b>待ち合わせおしゃべりマップ</b></p>
           </div>
-          <div id="rooms">
+          <!--<div id="rooms">
             <p class="rooms-title"><b>おしゃべりるーむ</b></p>
             <div class="room1 panel panel-default">
               <div class="panel-heading"><b>るーむ１</b></div>
@@ -132,7 +132,7 @@
               <div class="panel-heading"><b>るーむ５</b></div>
               <div class="panel-body"></div>
             </div>
-          </div>
+          </div>-->
         </div>
       </div>
       <div id="chatmap">
@@ -274,7 +274,8 @@
                   $('.room' + String(i+1)).css('display', 'none');
                 }
               }
-              viewRooms();
+              //viewRooms();
+              init(xxx);
             }
             else {
               $('#status').css('font-size', '24px');
@@ -291,7 +292,7 @@
 
 
       //チャットルーム（メッセンジャー連携）
-      function viewRooms() {
+      /*function viewRooms() {
         // ログイン画面の消去
         $("#login").stop().animate({opacity: 0}, {duration: 600});
         setTimeout(function() {
@@ -308,7 +309,7 @@
           });
           init(e.target.id);
         });
-      }
+      }*/
 
 
       // アプリ
@@ -345,9 +346,16 @@
         //$("#login").stop().animate({opacity: 0}, {duration: 600});
         //setTimeout(function() {$("#login").hide();}, 600);
         //$('#login').css('display', 'none');
-        $("#rooms").stop().animate({opacity: 0}, {duration: 600});
+        /*$("#rooms").stop().animate({opacity: 0}, {duration: 600});
         setTimeout(function() {
           $("#rooms").hide();
+        }, 600);*/
+
+        // ログイン画面の消去
+        $("#login").stop().animate({opacity: 0}, {duration: 600});
+        setTimeout(function() {
+          $("#login").hide();
+          $('#app').css('display', 'block');
         }, 600);
         $('#chatmap').css('display', 'block');
 
