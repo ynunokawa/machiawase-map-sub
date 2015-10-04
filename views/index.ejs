@@ -253,7 +253,7 @@
           //viewRooms();
           document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
 
-          FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
+          /*FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
             console.log('conversations: ', conv);
             if(conv.data.length > 0) {
               for(var i=0; i<5; i++) {
@@ -279,7 +279,7 @@
               $('#status').css('font-size', '24px');
               document.getElementById('status').innerHTML = 'メッセンジャー グループが1つもありません。Facebook あるいは Messenger アプリからるーむを共有したい仲間にメッセージを送ってメッセンジャー グループを作成してください。';
             }
-          });
+          });*/
         });
       }
 
