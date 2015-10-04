@@ -253,6 +253,8 @@
           //viewRooms();
           document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
 
+          init(xxx);
+
           /*FB.api('/me/conversations', { access_token: mytoken }, function(conv) {
             console.log('conversations: ', conv);
             if(conv.data.length > 0) {
