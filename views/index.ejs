@@ -342,6 +342,12 @@
       function init(roomid) {
         console.log('roomid: ', roomid);
         myroomid = roomid;
+        socket.emit('join', {
+          roomid: roomid,
+          name: myname,
+          id: myid
+        });
+
         // ログイン画面の消去
         //$("#login").stop().animate({opacity: 0}, {duration: 600});
         //setTimeout(function() {$("#login").hide();}, 600);
