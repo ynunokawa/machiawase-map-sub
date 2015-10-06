@@ -4,6 +4,8 @@
 
 Socket I/Oでメッセージと現在地をリアルタイムに共有してすれ違いのない待ち合わせを実現しよう(｀・ω・´)
 
+[Demo](http://machiawase-map-demo.herokuapp.com/)
+
 ## How to use?
 
 1. [Facebook Developers](https://developers.facebook.com/)でアプリを登録してIDを取得

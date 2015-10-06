@@ -4,6 +4,8 @@
 
 On the machiawase-map, you can always meet somebody (Facebook Friends only) at somewhere and share your message and location.
 
+[Demo](http://machiawase-map-demo.herokuapp.com/)
+
 ## How to use?
 
 1. Register the app and get the app id in [Facebook Developers](https://developers.facebook.com/)
